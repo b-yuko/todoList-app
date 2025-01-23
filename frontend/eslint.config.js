@@ -7,14 +7,19 @@ import react from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  {
+    ignores: [
+      'dist',
+      'src/**/*.d.{ts,tsx}'
+    ]
+  },
   {
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
       jsxA11y.flatConfigs.recommended
     ],
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
