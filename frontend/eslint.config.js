@@ -17,23 +17,22 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      jsxA11y.flatConfigs.recommended
+      jsxA11y.flatConfigs.recommended,
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
     ],
     files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-    settings: { react: { version: '18.3' } },
+    settings: { react: { version: 'detect' } },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      react,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
@@ -41,3 +40,8 @@ export default tseslint.config(
     },
   },
 )
+
+
+
+
+
