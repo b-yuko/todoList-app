@@ -40,8 +40,3 @@ export default tseslint.config(
     },
   },
 )
-
-
-
-
-
