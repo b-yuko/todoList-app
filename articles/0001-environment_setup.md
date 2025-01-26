@@ -99,3 +99,19 @@ export default tseslint.config(
 }
 ```
 
+# Prettier の導入と設定
+Prettierは、コードフォーマッター（コードを自動で整形するツール）です。特定のプログラミング言語やスタイルガイドに依存せず、一貫したコードスタイルを保つために使われます。
+
+```shell
+cd frontend
+npm install --save-dev --save-exact prettier
+```
+
+**frontend/package.json**
+```json
+{
+  "scripts": {
+    "format": "prettier src/ --write"
+  }
+}
+```
