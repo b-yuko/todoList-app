@@ -115,3 +115,102 @@ npm install --save-dev --save-exact prettier
   }
 }
 ```
+
+# Vitest の導入と設定
+Vitest は、Viteに最適化された次世代のテストフレームワークです。主に、Viteを使用しているプロジェクトのために設計されていますが、Viteを使用しないプロジェクトでも利用可能です。Vitestは、Jestと互換性のあるAPIを提供しており、Jestの代わりに簡単に導入することができます。
+
+```shell
+cd frontend
+npm install -D vitest
+```
+
+**frontend/package.json**
+```json
+{
+  "scripts": {
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
+  }
+}
+```
+
+### jsdom の導入と設定
+Node.js 環境で Web API をシミュレートするライブラリです。主に、ブラウザ環境で動作する JavaScript をサーバーサイド（Node.js）でも実行できるようにするために使われます。これにより、ブラウザ上でのみ動作する DOM 操作やイベント処理を、Node.js 上でテストやサーバーサイドレンダリング（SSR）用に模倣できます。  
+Vitest は DOM とブラウザ API をモックするために happy-dom と jsdom の両方をサポートしています。しかし Vitest には付属していないため、別途インストールする必要があります。
+
+```shell
+cd frontend
+npm i -D jsdom
+```
+
+**frontend/vite.config.ts**
+```diff
++ /// <reference types="vitest/config" />
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react-swc'
+  
+  // https://vite.dev/config/
+  export default defineConfig({
+    plugins: [react()],
++   test: {
++     environment: "jsdom"
++   }
+  })
+```
+
+### globals の設定
+デフォルトでは、vitest は明示性を保つためにグローバル API を提供しません。もし、Jest のようにグローバル API を使用したい場合は、CLI で `--globals` オプションを指定するか、設定ファイルに `globals: true` を追加することができます。
+
+**frontend/vite.config.ts**
+```ts
+export default defineConfig({
+  test: {
+    globals: true,
+  }
+})
+```
+
+#### TypeScriptでグローバルAPIを使うための設定
+TypeScript でグローバル API を使用するには、tsconfig.json の types フィールドに vitest/globals を追加します。  
+`import { expect, test } from 'vitest'` のような記述が不要になります。
+
+```json
+{
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}
+```
+
+# React Testing Library を導入する
+React Testing Library は、React コンポーネントのテストを行うための DOM Testing Library に基づいたツールです。React コンポーネントに特化した API を追加しています。  
+`render` や `screen` が使えるようになる。
+
+```shell
+cd frontend
+npm install --save-dev @testing-library/react @testing-library/dom @types/react @types/react-dom
+```
+
+# jest-dom の導入と設定をする
+jest-dom は、Jest 用にカスタムの DOM 要素マッチャーを提供する、Testing Library のための補助ライブラリです。  
+`.toBeInTheDocument()` が使えるようになる。
+
+```shell
+cd frontend
+npm install --save-dev @testing-library/jest-dom
+```
+
+**frontend/tsconfig.app.json**
+```json
+{
+  "compilerOptions": {
+    "types": ["@testing-library/jest-dom"]
+  }
+}
+```
+
+
+
+
+
+
