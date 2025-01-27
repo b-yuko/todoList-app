@@ -159,7 +159,8 @@ npm i -D jsdom
 ```
 
 ### globals の設定
-デフォルトでは、vitest は明示性を保つためにグローバル API を提供しません。もし、Jest のようにグローバル API を使用したい場合は、CLI で `--globals` オプションを指定するか、設定ファイルに `globals: true` を追加することができます。
+デフォルトでは、vitest は明示性を保つためにグローバル API を提供しません。もし、Jest のようにグローバル API を使用したい場合は、CLI で `--globals` オプションを指定するか、設定ファイルに `globals: true` を追加することができます。  
+<br>
 
 **frontend/vite.config.ts**
 ```ts
@@ -169,10 +170,11 @@ export default defineConfig({
   }
 })
 ```
+<br>
 
 #### TypeScriptでグローバルAPIを使うための設定
 TypeScript でグローバル API を使用するには、tsconfig.json の types フィールドに vitest/globals を追加します。  
-`import { expect, test } from 'vitest'` のような記述が不要になります。
+`import { expect, test } from 'vitest'` のような記述が不要になります。  
 
 ```json
 {
@@ -184,28 +186,53 @@ TypeScript でグローバル API を使用するには、tsconfig.json の type
 
 # React Testing Library を導入する
 React Testing Library は、React コンポーネントのテストを行うための DOM Testing Library に基づいたツールです。React コンポーネントに特化した API を追加しています。  
-`render` や `screen` が使えるようになる。
+`render` や `screen` などが使えるようになる。  
 
 ```shell
 cd frontend
 npm install --save-dev @testing-library/react @testing-library/dom @types/react @types/react-dom
 ```
 
-# jest-dom の導入と設定をする
+# jest-dom の導入と設定
 jest-dom は、Jest 用にカスタムの DOM 要素マッチャーを提供する、Testing Library のための補助ライブラリです。  
-`.toBeInTheDocument()` が使えるようになる。
+`.toBeInTheDocument()` などのマッチャーが使えるようになる。
 
 ```shell
 cd frontend
 npm install --save-dev @testing-library/jest-dom
 ```
+<br>
 
-**frontend/tsconfig.app.json**
+**frontend/setupTests.ts**  
+テストセットアップファイルを作成し、@testing-library/jest-dom/vitest をインポートする。  
+```ts
+import '@testing-library/jest-dom/vitest'
+```
+<br>
+
+**frontend/vite.config.ts**  
+test セクションにテストセットアップファイルを追加して、テストが実行される前に setupTests.ts をロードするようにする。  
+```ts
+export default defineConfig({
+  test: {
+    setupFiles: ['./setupTests.ts'],
+  }
+})
+```
+<br>
+
+**frontend/tsconfig.app.json**  
+tsconfig.app.json に必要な型情報を追加する。  
+@testing-library/jest-dom と vitest/globals の型を指定することで、テストで必要な型チェックが適切に行われます。  
 ```json
 {
   "compilerOptions": {
-    "types": ["@testing-library/jest-dom"]
-  }
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ]
+  },
+  "include": ["./setupTests.ts"]
 }
 ```
 
