@@ -18,7 +18,7 @@ volta pin node@22.13
 volta pin npm@10.9
 ```
 
-# ESLint Config Inspector を導入する
+# ESLint Config Inspector の導入
 ESLint Config Inspector は、ESLint の設定ファイルを解析して、プロジェクト内での ESLint の設定がどのように影響を与えるかを視覚的に理解するためのツールです。主に、ESLint の設定がどのルールにどのように適用されるかを調べるために使います。
 
 このツールは、設定ファイル（例えば .eslintrc.json や .eslintrc.js）に書かれたルールや設定が、どのファイルやコードブロックにどう影響しているのかを可視化するのに役立ちます。特に、複雑な設定や複数の設定ファイルがある場合に、設定の優先順位や競合を簡単に把握することができます。
@@ -184,7 +184,7 @@ TypeScript でグローバル API を使用するには、tsconfig.json の type
 }
 ```
 
-# React Testing Library を導入する
+# React Testing Library の導入
 React Testing Library は、React コンポーネントのテストを行うための DOM Testing Library に基づいたツールです。React コンポーネントに特化した API を追加しています。  
 `render` や `screen` などが使えるようになる。  
 
@@ -237,7 +237,15 @@ tsconfig.app.json に必要な型情報を追加する。
 ```
 
 
+# "@testing-library/user-event" の導入
+userEvent は、Testing Library の補助ライブラリで、ユーザーのインタラクションをシミュレートするために使用されます。ブラウザ内で実際に行われるインタラクション（クリック、入力など）を再現し、複数のイベントを順次発火させ、インタラクション可能性や視認性チェックも行います。これにより、ブラウザの挙動を忠実に再現し、ユーザーの操作に基づいたテストが可能になります。
 
+userEvent は fireEvent と異なり、単一のイベントを発火させるのではなく、実際のユーザー操作に沿った一連のイベントを処理します。例えば、テキストボックスへの入力では、フォーカスやキーボードイベントが発生することも考慮されます。
 
+テストでは、userEvent.setup() を呼び出してインタラクションを準備し、コンポーネントのレンダリング後に操作をシミュレートします。userEvent を使うことで、より実際のユーザーの操作に近いテストが可能になります。
 
+```shell
+cd frontend
+npm install --save-dev @testing-library/user-event
+```
 
