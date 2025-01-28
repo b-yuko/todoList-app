@@ -249,3 +249,11 @@ cd frontend
 npm install --save-dev @testing-library/user-event
 ```
 
+
+# "react-router" の導入
+React Routerは、Reactアプリケーションにおける「ルーティング」を担当するライブラリです。URLに基づいて異なるコンポーネントをレンダリングし、SPA（シングルページアプリケーション）でのページ遷移を管理します。React Routerは、URLの変更をトリガーにして、画面を再描画し、ユーザーがアプリケーション内でスムーズに移動できるようにします。最新のバージョンでは、フレームワークとしても利用できるように機能が強化され、コード分割やSSR（サーバーサイドレンダリング）など、複雑な開発にも対応しています。
+
+```shell
+cd frontend
+npm i react-router
+```
