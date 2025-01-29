@@ -257,3 +257,48 @@ React Routerは、Reactアプリケーションにおける「ルーティング
 cd frontend
 npm i react-router
 ```
+
+
+# モジュールのインポートパスを短縮する設定
+**メリット**
+- パスがスッキリして、可読性が向上する
+- ディレクトリ構造を変更しても修正が楽になる
+- コードの統一感が出て、わかりやすい
+
+```shell
+cd fronend
+npm install --save-dev @types/node
+```
+
+**frontend/vite.config.ts**  
+- (目的) Vite のモジュール解決  
+- (機能するタイミング) ビルド・実行時（JS の import 解決）  
+```ts
+import path from 'node:path'
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})
+```
+
+**frontend/tsconfig.app.json**  
+- (目的) TypeScript の型解決  
+- (機能するタイミング) TypeScript のコンパイル時のみ
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  }
+}
+```
+
+
