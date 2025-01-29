@@ -28,6 +28,13 @@
       "@testing-library/jest-dom"
     ],
 
+    /* Module Path Configuration */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "src",
