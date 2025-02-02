@@ -3,7 +3,7 @@ import { App } from "@/App.tsx";
 import { MemoryRouter } from "react-router";
 import { render } from "@testing-library/react";
 import { TodoPage } from "@/component/TodoPage.tsx";
-import { TaskRepositoryImpl } from "@/repository/TaskRepositoryImpl.ts";
+import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
 
 vi.mock("@/component/TodoPage");
 

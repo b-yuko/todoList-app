@@ -11,8 +11,9 @@
     - [x] 「add」というボタンがある
     - [ ] 入力欄の値が空だったとき ボタンは押せない
   - [ ] ボタンをクリックしたとき
-    - [ ] テキスト入力欄の値を state に保存する
-    - [ ] taskRepository.saveTask を実行するときに task を渡している
+    - [x] taskRepository.saveTask を実行するときに task を渡している
+    - [ ] 保存後に入力欄をクリアする
+    - [ ] 空白のみの入力を防ぐ
     - [ ] todoタスクが上から順に時系列で表示される
       - [ ] taskRepository.getTask() を実行する
       - [ ] taskRepository.getTask() の戻り値が空だったとき「タスクはありません」と表示する
