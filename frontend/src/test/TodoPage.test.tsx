@@ -60,6 +60,26 @@ describe("TodoPage", () => {
         //Then
         expect(spyTaskRepository.saveTask).toHaveBeenCalledOnce();
       });
+
+      it("入力したタスクが、バックエンドに送信する関数に渡されていること", async () => {
+        // Given
+        const user = userEvent.setup();
+
+        const spyTaskRepository: TaskRepository = {
+          saveTask: vi.fn(),
+        };
+
+        render(<TodoPage taskRepository={spyTaskRepository} />);
+
+        const input = screen.getByRole("textbox", {name: "todo:"})
+        await user.type(input, "テストタスク")
+
+        // When
+        await user.click(screen.getByRole("button", { name: "add" }));
+
+        //Then
+        expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク")
+      });
     });
   });
 });
