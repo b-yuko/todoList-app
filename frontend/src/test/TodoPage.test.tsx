@@ -43,6 +43,26 @@ describe("TodoPage", () => {
       expect(button).toBeInTheDocument();
     });
 
+    it("add ボタンにフォーカスがあるときに Enter キーでタスクが送信されること", async () => {
+      // Given
+      const user = userEvent.setup();
+      const spyTaskRepository: TaskRepository = {
+        saveTask: vi.fn(),
+      };
+
+      render(<TodoPage taskRepository={spyTaskRepository} />);
+
+      const input = screen.getByRole("textbox", { name: "todo:" });
+      await user.type(input, "テストタスク");
+      await user.tab();
+
+      // When
+      await user.keyboard("{enter}");
+
+      // Then
+      expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
+    });
+
     describe("ボタンをクリックしたとき", () => {
       it("入力されたタスクをバックエンドに送信する関数を呼んでいること", async () => {
         // Given
@@ -71,14 +91,14 @@ describe("TodoPage", () => {
 
         render(<TodoPage taskRepository={spyTaskRepository} />);
 
-        const input = screen.getByRole("textbox", {name: "todo:"})
-        await user.type(input, "テストタスク")
+        const input = screen.getByRole("textbox", { name: "todo:" });
+        await user.type(input, "テストタスク");
 
         // When
         await user.click(screen.getByRole("button", { name: "add" }));
 
         //Then
-        expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク")
+        expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
       });
     });
   });
