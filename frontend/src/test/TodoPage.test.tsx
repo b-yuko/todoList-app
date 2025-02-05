@@ -1,4 +1,4 @@
-import { describe, expect } from "vitest";
+import { beforeEach, describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { TodoPage } from "@/component/TodoPage.tsx";
 import { userEvent } from "@testing-library/user-event";
@@ -6,6 +6,15 @@ import { TaskRepository } from "@/repository/TaskRepository.ts";
 
 describe("TodoPage", () => {
   const noOpTaskRepository = {} as TaskRepository;
+  let user: ReturnType<typeof userEvent.setup>;
+  let spyTaskRepository: TaskRepository;
+
+  beforeEach(() => {
+    user = userEvent.setup();
+    spyTaskRepository = {
+      saveTask: vi.fn(),
+    };
+  });
 
   describe("todoタスクを入力できる", () => {
     it("テキスト入力欄がある", () => {
@@ -45,11 +54,6 @@ describe("TodoPage", () => {
 
     it("add ボタンにフォーカスがあるときに Enter キーでタスクが送信されること", async () => {
       // Given
-      const user = userEvent.setup();
-      const spyTaskRepository: TaskRepository = {
-        saveTask: vi.fn(),
-      };
-
       render(<TodoPage taskRepository={spyTaskRepository} />);
 
       const input = screen.getByRole("textbox", { name: "todo:" });
@@ -66,12 +70,6 @@ describe("TodoPage", () => {
     describe("ボタンをクリックしたとき", () => {
       it("入力されたタスクをバックエンドに送信する関数を呼んでいること", async () => {
         // Given
-        const user = userEvent.setup();
-
-        const spyTaskRepository: TaskRepository = {
-          saveTask: vi.fn(),
-        };
-
         render(<TodoPage taskRepository={spyTaskRepository} />);
 
         // When
@@ -83,12 +81,6 @@ describe("TodoPage", () => {
 
       it("入力したタスクが、バックエンドに送信する関数に渡されていること", async () => {
         // Given
-        const user = userEvent.setup();
-
-        const spyTaskRepository: TaskRepository = {
-          saveTask: vi.fn(),
-        };
-
         render(<TodoPage taskRepository={spyTaskRepository} />);
 
         const input = screen.getByRole("textbox", { name: "todo:" });
