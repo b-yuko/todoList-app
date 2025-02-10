@@ -38,6 +38,18 @@ describe("TodoPage", () => {
       // Then
       expect(screen.getByPlaceholderText("タスクを入力")).toBeInTheDocument();
     });
+
+    it("テキスト入力欄にフォーカスがあたっていて Enter キーを押したとき、タスクは送信されないこと", async () => {
+      // Given
+      render(<TodoPage taskRepository={spyTaskRepository} />);
+
+      // When
+      const input = screen.getByRole("textbox", { name: "todo:" });
+      await user.type(input, "テストタスク{enter}");
+
+      // Then
+      expect(spyTaskRepository.saveTask).not.toHaveBeenCalled();
+    });
   });
 
   describe("todoタスクを送信するボタン", () => {

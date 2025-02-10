@@ -11,7 +11,11 @@ export function TodoPage({ taskRepository }: TopPageProps) {
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
 
-    await taskRepository.saveTask(taskInput);
+    const activeElement = document.activeElement as HTMLElement;
+
+    if (activeElement?.tagName === "BUTTON") {
+      await taskRepository.saveTask(taskInput);
+    }
   };
 
   return (
