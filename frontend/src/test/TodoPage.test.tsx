@@ -28,7 +28,6 @@ describe("TodoPage", () => {
         screen.getByRole("textbox", { name: "todo:" }),
       ).toBeInTheDocument();
     });
-
     it("入力欄にプレースホルダーが設定されている", () => {
       // Given
 
@@ -38,7 +37,6 @@ describe("TodoPage", () => {
       // Then
       expect(screen.getByPlaceholderText("タスクを入力")).toBeInTheDocument();
     });
-
     it("テキスト入力欄にフォーカスがあたっていて Enter キーを押したとき、タスクは送信されないこと", async () => {
       // Given
       render(<TodoPage taskRepository={spyTaskRepository} />);
@@ -63,7 +61,6 @@ describe("TodoPage", () => {
       const button = screen.getByRole("button", { name: "add" });
       expect(button).toBeInTheDocument();
     });
-
     it("add ボタンにフォーカスがあるときに Enter キーでタスクが送信されること", async () => {
       // Given
       render(<TodoPage taskRepository={spyTaskRepository} />);
@@ -79,18 +76,7 @@ describe("TodoPage", () => {
       expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
     });
 
-    describe("ボタンをクリックしたとき", () => {
-      it("入力されたタスクをバックエンドに送信する関数を呼んでいること", async () => {
-        // Given
-        render(<TodoPage taskRepository={spyTaskRepository} />);
-
-        // When
-        await user.click(screen.getByRole("button", { name: "add" }));
-
-        //Then
-        expect(spyTaskRepository.saveTask).toHaveBeenCalledOnce();
-      });
-
+    describe("addボタンをクリックしたとき", () => {
       it("入力したタスクが、バックエンドに送信する関数に渡されていること", async () => {
         // Given
         render(<TodoPage taskRepository={spyTaskRepository} />);
@@ -103,6 +89,29 @@ describe("TodoPage", () => {
 
         //Then
         expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
+      });
+      it("入力欄をクリアする", async () => {
+        // Given
+        render(<TodoPage taskRepository={spyTaskRepository} />);
+
+        const input = screen.getByRole("textbox", { name: "todo:" });
+        await user.type(input, "テストタスク");
+
+        // When
+        await user.click(screen.getByRole("button", { name: "add" }));
+
+        // Then
+        expect(input).toHaveValue("");
+      });
+      it("入力欄が空白のとき、バックエンドに送信する関数は呼ばれないこと", async () => {
+        // Given
+        render(<TodoPage taskRepository={spyTaskRepository} />);
+
+        // When
+        await user.click(screen.getByRole("button", { name: "add" }));
+
+        // Then
+        expect(spyTaskRepository.saveTask).not.toHaveBeenCalled();
       });
     });
   });
