@@ -24,8 +24,8 @@
 
 - [ ] TaskRepository
   - [ ] saveTask(task) が実行されたとき
-    - [ ] /api/task に axios の post メソッドをたたいている
-    - [ ] post するときに task を渡している
+    - [x] saveTask を呼んだとき、/api/task に task を POST する
+    - [x] aveTask が失敗したとき、エラーをキャッチしてログに出力する
   - [ ] getTask() が実行されたとき
     - [ ] /api/task に axios の get メソッドをたたいている
     - [ ] task と 追加された日時がセットで BE から返ってくる
