@@ -48,6 +48,17 @@ describe("TodoPage", () => {
       // Then
       expect(spyTaskRepository.saveTask).not.toHaveBeenCalled();
     });
+    it("文字が入力されているテキスト入力欄に フォーカスがあたっていて Enter キーを押したとき、入力されている文字が消えないこと", async () => {
+      // Given
+      render(<TodoPage taskRepository={noOpTaskRepository} />);
+
+      // When
+      const input = screen.getByRole("textbox", { name: "todo:" });
+      await user.type(input, "Enter押しても消えないで！{enter}");
+
+      // Then
+      expect(input).toHaveValue("Enter押しても消えないで！");
+    });
   });
 
   describe("todoタスクを送信するボタン", () => {
@@ -103,7 +114,7 @@ describe("TodoPage", () => {
         // Then
         expect(input).toHaveValue("");
       });
-      it("入力欄が空白のとき、バックエンドに送信する関数は呼ばれないこと", async () => {
+      it("入力欄が空のとき、バックエンドに送信する関数は呼ばれないこと", async () => {
         // Given
         render(<TodoPage taskRepository={spyTaskRepository} />);
 

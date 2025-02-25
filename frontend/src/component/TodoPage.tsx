@@ -1,5 +1,5 @@
 import { TaskRepository } from "@/repository/TaskRepository.ts";
-import { FormEvent, useState } from "react";
+import { FormEvent, KeyboardEvent, useState } from "react";
 
 type TopPageProps = {
   taskRepository: TaskRepository;
@@ -21,6 +21,12 @@ export function TodoPage({ taskRepository }: TopPageProps) {
     setTaskInput("");
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <form onSubmit={handleAddTask}>
       <label>
@@ -30,6 +36,7 @@ export function TodoPage({ taskRepository }: TopPageProps) {
           placeholder="タスクを入力"
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </label>
       <button type="submit">add</button>
