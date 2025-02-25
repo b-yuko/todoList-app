@@ -302,3 +302,10 @@ export default defineConfig({
 ```
 
 
+# axios の導入
+[Axios](https://axios-http.com/docs/intro)は、Node.jsとブラウザ向けのPromiseベースのHTTPクライアントです。
+
+```shell
+cd frontend
+npm install axios
+```
