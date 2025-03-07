@@ -7,3 +7,5 @@ pre-push:
 	cd frontend && npm run format
 	cd frontend && npm run test
 	cd frontend && npm run build
+	cd backend && ./gradlew build -x test
+	cd backend && ./gradlew test
