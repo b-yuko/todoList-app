@@ -11,6 +11,15 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ['./setupTests.ts'],
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(":5173", ":8080"),
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
