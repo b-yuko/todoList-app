@@ -9,13 +9,12 @@ describe("TaskRepository", () => {
     const taskRepository = new TaskRepositoryImpl();
 
     // When
-    await taskRepository.saveTask("タスクをバックエンドに送信するよ");
+    await taskRepository.saveTask({ task: "タスクをバックエンドに送信するよ" });
 
     // Then
-    expect(axios.post).toHaveBeenCalledWith(
-      "api/task",
-      "タスクをバックエンドに送信するよ",
-    );
+    expect(axios.post).toHaveBeenCalledWith("api/task", {
+      task: "タスクをバックエンドに送信するよ",
+    });
   });
 
   it("aveTask が失敗したとき、エラーをキャッチしてログに出力する", async () => {
@@ -25,7 +24,7 @@ describe("TaskRepository", () => {
     const taskRepository = new TaskRepositoryImpl();
 
     // When
-    await taskRepository.saveTask("送信が失敗したとき");
+    await taskRepository.saveTask({ task: "送信が失敗したとき" });
 
     // Then
     expect(spyConsole).toHaveBeenCalledWith(
