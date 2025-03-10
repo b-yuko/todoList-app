@@ -1,6 +1,9 @@
 front:
 	cd frontend && npm run dev
 
+back:
+	cd backend && ./gradlew bootRun --args='--spring.profiles.active=local'
+
 pre-push:
 	cd frontend && npm install
 	cd frontend && npm run lint
