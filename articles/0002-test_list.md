@@ -23,9 +23,9 @@
     - [ ] 入力欄の値が空だったとき ボタンはクリックできない
 
 - [ ] TaskRepository
-  - [ ] saveTask(task) が実行されたとき
-    - [x] saveTask を呼んだとき、/api/task に task を POST する
-    - [x] aveTask が失敗したとき、エラーをキャッチしてログに出力する
+  - [ ] saveTask(task) を実行したとき
+    - [x] /api/task に task を POST する
+    - [x] saveTask が失敗したとき、エラーをキャッチしてログに出力する
   - [ ] getTask() が実行されたとき
     - [ ] /api/task に axios の get メソッドをたたいている
     - [ ] task と 追加された日時がセットで BE から返ってくる
