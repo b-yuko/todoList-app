@@ -1,4 +1,4 @@
-package com.example.todoList_app.service
+package com.example.todoList.service
 
 import org.springframework.stereotype.Service
 
@@ -7,7 +7,7 @@ interface TaskService {
 }
 
 @Service
-class TaskServiceImpl: TaskService {
+class TaskServiceImpl : TaskService {
     override fun saveTask(task: String) {
         println(task)
     }

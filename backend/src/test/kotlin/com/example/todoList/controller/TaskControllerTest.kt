@@ -1,6 +1,6 @@
-package com.example.todoList_app.controller
+package com.example.todoList.controller
 
-import com.example.todoList_app.service.TaskService
+import com.example.todoList.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,44 +25,45 @@ class TaskControllerTest {
     }
 
     @Test
-    fun `api task に POST したとき、200 OK が返る`(){
+    fun `api task に POST したとき、200 OK が返る`() {
         // Given
-        every { mockTaskService.saveTask(any())} returns Unit
+        every { mockTaskService.saveTask(any()) } returns Unit
 
         // When
-        val result = mockMvc.perform(
-            post("/api/task")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                         {
-                             "task": "テストタスク"
-                         }
-                         """.trimIndent(),
-                ),
-        )
+        val result =
+            mockMvc.perform(
+                post("/api/task")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                            "task": "テストタスク"
+                        }
+                        """.trimIndent(),
+                    ),
+            )
 
         // Then
         result.andExpect(status().isOk)
     }
 
     @Test
-    fun `api task に POST したとき、タスクをサービスに渡している`(){
+    fun `api task に POST したとき、タスクをサービスに渡している`() {
         // Given
-        every { mockTaskService.saveTask(any())} returns Unit
+        every { mockTaskService.saveTask(any()) } returns Unit
 
         // When
         mockMvc.perform(
-                post("/api/task")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
-                         {
-                             "task": "テストタスク"
-                         }
-                         """.trimIndent(),
-                    ),
-            )
+            post("/api/task")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                        "task": "テストタスク"
+                    }
+                    """.trimIndent(),
+                ),
+        )
 
         // Then
         verify { mockTaskService.saveTask("テストタスク") }

@@ -1,4 +1,4 @@
-package com.example.todoList_app
+package com.example.todoList
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TodoListAppApplication
 
 fun main(args: Array<String>) {
-	runApplication<TodoListAppApplication>(*args)
+    runApplication<TodoListAppApplication>(*args)
 }
