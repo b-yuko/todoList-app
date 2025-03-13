@@ -309,3 +309,67 @@ export default defineConfig({
 cd frontend
 npm install axios
 ```
+
+# spring initializer でバックエンドプロジェクトを生成する
+spring initializer で下記のように設定する。
+![spring initializer](images/spring-initializr.png)
+GENERATEをクリックして、プロジェクトをダウンロードする。  
+ダウンロードしたプロジェクトを解凍し、IntelliJ IDEA で開く。
+
+# ktlint の導入
+Ktlint は、Kotlin のコードスタイルをチェックするためのツールです。Ktlint は、Kotlin のコードフォーマッターとしても機能し、コードの品質を向上させるためのルールを提供します。Ktlint は、Kotlin のコードを自動的に整形し、コードの一貫性を保つために使われます。
+
+**backend/build.gradle.kts**  
+`plugins` に `org.jlleitschuh.gradle.ktlint` を追加する。  
+`ktlint` ブロックを追加する。  
+
+version: ktlint のバージョンを指定することができる。  
+verbose: true に設定することで、ktlint の実行結果を詳細に表示することができる。  
+reporters: reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE) に設定することで、ktlint の結果を Checkstyle 形式で出力することができる。  
+```kotlin
+plugins {
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+}
+
+ktlint {
+    version.set("1.5.0")
+    verbose.set(true)
+
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+    }
+}
+```
+
+# Makefile の導入
+Makefile は、ビルドやテスト、デプロイなどのタスクを自動化するためのスクリプトファイルです。Makefile を使うことで、ターミナルから簡単にコマンドを実行し、複数のタスクを一括で実行することができます。Makefile は、タスクの依存関係を定義し、タスクの実行順序を制御することができます。  
+
+**Makefile**  
+プロジェクト直下に Makefile を作成する。  
+front: フロントエンドの開発サーバーを起動する  
+back: バックエンドの開発サーバーを起動する  
+pre-push: フロントエンドとバックエンドのテストを実行する  
+```Makefile
+front:
+	cd frontend && npm run dev
+
+back:
+	cd backend && ./gradlew bootRun --args='--spring.profiles.active=local'
+
+pre-push: front-check back-check
+
+front-check:
+	cd frontend && npm install
+	cd frontend && npm run lint
+	cd frontend && npm run format
+	cd frontend && npm run test
+	cd frontend && npm run build
+
+back-check:
+	cd backend && ./gradlew ktlintFormat
+	cd backend && ./gradlew ktlintCheck
+	cd backend && ./gradlew test
+	cd backend && ./gradlew build -x test
+```
+
+
