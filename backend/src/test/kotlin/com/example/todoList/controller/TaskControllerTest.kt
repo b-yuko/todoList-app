@@ -1,5 +1,6 @@
 package com.example.todoList.controller
 
+import com.example.todoList.service.TaskSaveItem
 import com.example.todoList.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
@@ -66,6 +67,6 @@ class TaskControllerTest {
         )
 
         // Then
-        verify { mockTaskService.saveTask("テストタスク") }
+        verify { mockTaskService.saveTask(TaskSaveItem(taskName = "テストタスク")) }
     }
 }

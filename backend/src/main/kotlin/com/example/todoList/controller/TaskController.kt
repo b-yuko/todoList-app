@@ -1,5 +1,6 @@
 package com.example.todoList.controller
 
+import com.example.todoList.service.TaskSaveItem
 import com.example.todoList.service.TaskService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,6 +20,6 @@ class TaskController(
     fun saveTask(
         @RequestBody request: TaskRequest,
     ) {
-        taskService.saveTask(request.task)
+        taskService.saveTask(TaskSaveItem(taskName = request.task))
     }
 }
