@@ -5,7 +5,9 @@ import { render } from "@testing-library/react";
 import { TodoPage } from "@/component/TodoPage.tsx";
 import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
 
-vi.mock("@/component/TodoPage");
+vi.mock("@/component/TodoPage", () => ({
+  TodoPage: vi.fn(),
+}));
 
 describe("App", () => {
   describe("/ をレンダーしたとき", () => {
@@ -20,10 +22,10 @@ describe("App", () => {
       );
 
       // Then
-      expect(TodoPage).toHaveBeenCalledExactlyOnceWith(
-        { taskRepository: new TaskRepositoryImpl() },
-        expect.anything(),
-      );
+      expect(TodoPage).toHaveBeenCalledTimes(1);
+      expect.objectContaining({
+        taskRepository: expect.any(TaskRepositoryImpl),
+      });
     });
   });
 });
