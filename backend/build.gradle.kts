@@ -1,3 +1,5 @@
+var mockitoAgent = configurations.create("mockitoAgent")
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
@@ -27,7 +29,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-core:5.16.1")
+    mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
 kotlin {
@@ -38,10 +40,7 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    jvmArgs =
-        listOf(
-            "-javaagent:${configurations.testRuntimeClasspath.get().find { it.name.contains("mockito-core") }?.absolutePath}",
-        )
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
 
 ktlint {
