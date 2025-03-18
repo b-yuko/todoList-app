@@ -27,6 +27,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.16.1")
 }
 
 kotlin {
@@ -37,6 +38,10 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs =
+        listOf(
+            "-javaagent:${configurations.testRuntimeClasspath.get().find { it.name.contains("mockito-core") }?.absolutePath}",
+        )
 }
 
 ktlint {
