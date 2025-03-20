@@ -1,4 +1,4 @@
-var mockitoAgent = configurations.create("mockitoAgent")
+val mockitoAgent: Configuration by configurations.creating
 
 plugins {
     kotlin("jvm") version "1.9.25"
@@ -29,7 +29,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
+    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.2") { isTransitive = false }
 }
 
 kotlin {
@@ -40,7 +40,7 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    jvmArgs("-javaagent:${mockitoAgent.singleFile.absolutePath}")
 }
 
 ktlint {
