@@ -1,3 +1,5 @@
+val mockitoAgent: Configuration by configurations.creating
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
@@ -31,6 +33,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.17")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.2") { isTransitive = false }
 }
 
 kotlin {
@@ -41,6 +45,7 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-javaagent:${mockitoAgent.singleFile.absolutePath}")
 }
 
 ktlint {
