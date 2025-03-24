@@ -1,5 +1,5 @@
-import { TaskRepository } from "@/app/repository/TaskRepository.ts";
 import { FormEvent, KeyboardEvent, useState } from "react";
+import { TaskRepository } from "@/app/repository/TaskRepository.ts";
 
 type TopPageProps = {
   taskRepository: TaskRepository;
@@ -15,7 +15,7 @@ export function TodoPage({ taskRepository }: TopPageProps) {
     const activeElement = document.activeElement as HTMLElement;
 
     if (activeElement?.tagName === "BUTTON") {
-      await taskRepository.saveTask(taskInput);
+      await taskRepository.saveTask({ task: taskInput });
     }
 
     setTaskInput("");

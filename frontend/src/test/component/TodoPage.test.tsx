@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { TodoPage } from "@/app/component/TodoPage.tsx";
 import { userEvent } from "@testing-library/user-event";
+import { TodoPage } from "@/app/component/TodoPage.tsx";
 import { TaskRepository } from "@/app/repository/TaskRepository.ts";
 
 describe("TodoPage", () => {
@@ -84,7 +84,9 @@ describe("TodoPage", () => {
       await user.keyboard("{enter}");
 
       // Then
-      expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
+      expect(spyTaskRepository.saveTask).toHaveBeenCalledWith({
+        task: "テストタスク",
+      });
     });
 
     describe("addボタンをクリックしたとき", () => {
@@ -99,7 +101,9 @@ describe("TodoPage", () => {
         await user.click(screen.getByRole("button", { name: "add" }));
 
         //Then
-        expect(spyTaskRepository.saveTask).toHaveBeenCalledWith("テストタスク");
+        expect(spyTaskRepository.saveTask).toHaveBeenCalledWith({
+          task: "テストタスク",
+        });
       });
       it("入力欄をクリアする", async () => {
         // Given
