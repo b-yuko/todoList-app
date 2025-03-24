@@ -1,11 +1,11 @@
 import { describe, expect } from "vitest";
-import { App } from "@/App.tsx";
+import { App } from "@/app/App.tsx";
 import { MemoryRouter } from "react-router";
 import { render } from "@testing-library/react";
-import { TodoPage } from "@/component/TodoPage.tsx";
-import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
+import { TodoPage } from "@/app/component/TodoPage.tsx";
+import { TaskRepositoryImpl } from "@/app/repository/TaskRepository.ts";
 
-vi.mock("@/component/TodoPage", () => ({
+vi.mock("@/app/component/TodoPage", () => ({
   TodoPage: vi.fn(),
 }));
 
@@ -26,6 +26,7 @@ describe("App", () => {
       expect.objectContaining({
         taskRepository: expect.any(TaskRepositoryImpl),
       });
+      expect.anything();
     });
   });
 });

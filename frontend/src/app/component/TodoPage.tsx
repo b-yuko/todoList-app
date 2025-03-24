@@ -1,4 +1,4 @@
-import { TaskRepository } from "@/repository/TaskRepository.ts";
+import { TaskRepository } from "@/app/repository/TaskRepository.ts";
 import { FormEvent, KeyboardEvent, useState } from "react";
 
 type TopPageProps = {

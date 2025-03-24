@@ -1,5 +1,5 @@
 import { describe, expect } from "vitest";
-import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
+import { TaskRepositoryImpl } from "@/app/repository/TaskRepository.ts";
 import axios from "axios";
 
 describe("TaskRepository", () => {

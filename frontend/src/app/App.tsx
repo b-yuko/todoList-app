@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
-import { TodoPage } from "@/component/TodoPage.tsx";
-import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
+import { TodoPage } from "@/app/component/TodoPage.tsx";
+import { TaskRepositoryImpl } from "@/app/repository/TaskRepository.ts";
 
 export function App() {
   const taskRepository = new TaskRepositoryImpl();
