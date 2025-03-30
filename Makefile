@@ -14,5 +14,7 @@ front-check:
 	cd frontend && npm run build
 
 back-check:
+	cd backend && ./gradlew ktlintFormat
+	cd backend && ./gradlew ktlintCheck
 	cd backend && ./gradlew test
 	cd backend && ./gradlew build -x test
