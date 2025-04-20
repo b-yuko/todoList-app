@@ -1,4 +1,4 @@
-package com.example.todoList
+package com.example.todolistapp.backend
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

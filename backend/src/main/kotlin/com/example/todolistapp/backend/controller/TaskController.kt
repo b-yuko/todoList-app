@@ -1,6 +1,6 @@
-package com.example.todoList.controller
+package com.example.todolistapp.backend.controller
 
-import com.example.todoList.service.TaskService
+import com.example.todolistapp.backend.service.TaskService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

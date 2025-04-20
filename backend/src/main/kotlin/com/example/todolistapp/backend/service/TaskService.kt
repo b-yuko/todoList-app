@@ -1,4 +1,4 @@
-package com.example.todoList.service
+package com.example.todolistapp.backend.service
 
 import org.springframework.stereotype.Service
 

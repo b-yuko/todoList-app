@@ -1,6 +1,6 @@
-package com.example.todoList.controller
+package com.example.todolistapp.backend.controller
 
-import com.example.todoList.service.TaskService
+import com.example.todolistapp.backend.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
