@@ -1,1 +1,1 @@
-rootProject.name = "todoList-app"
+rootProject.name = "backend"

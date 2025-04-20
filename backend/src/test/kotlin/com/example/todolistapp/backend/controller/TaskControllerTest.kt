@@ -34,13 +34,7 @@ class TaskControllerTest {
             mockMvc.perform(
                 post("/api/task")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        """
-                        {
-                            "task": "テストタスク"
-                        }
-                        """.trimIndent(),
-                    ),
+                    .content("""{"task":"これがないとテストが失敗するよ"}"""),
             )
 
         // Then
@@ -56,13 +50,7 @@ class TaskControllerTest {
         mockMvc.perform(
             post("/api/task")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                    {
-                        "task": "テストタスク"
-                    }
-                    """.trimIndent(),
-                ),
+                .content("""{"task":"テストタスク"}"""),
         )
 
         // Then

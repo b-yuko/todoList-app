@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { TodoPage } from "@/component/TodoPage.tsx";
 import { userEvent } from "@testing-library/user-event";
-import { TaskRepository } from "@/repository/TaskRepository.ts";
+import { TodoPage } from "@/app/component/TodoPage.tsx";
+import { TaskRepository } from "@/app/repository/TaskRepository.ts";
 
 describe("TodoPage", () => {
   const noOpTaskRepository = {} as TaskRepository;

@@ -1,6 +1,6 @@
 import { describe, expect } from "vitest";
-import { TaskRepositoryImpl } from "@/repository/TaskRepository.ts";
 import axios from "axios";
+import { TaskRepositoryImpl } from "@/app/repository/TaskRepository.ts";
 
 describe("TaskRepository", () => {
   it("saveTask を呼んだとき、/api/task に task を POST する", async () => {

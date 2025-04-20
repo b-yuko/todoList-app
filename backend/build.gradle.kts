@@ -30,11 +30,11 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.13.17")
+    testImplementation("io.mockk:mockk:1.14.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.2") { isTransitive = false }
+    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.4") { isTransitive = false }
 }
 
 kotlin {

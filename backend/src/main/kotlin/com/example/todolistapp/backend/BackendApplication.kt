@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class TodoListAppApplication
+class BackendApplication
 
 fun main(args: Array<String>) {
-    runApplication<TodoListAppApplication>(*args)
+    runApplication<BackendApplication>(*args)
 }
