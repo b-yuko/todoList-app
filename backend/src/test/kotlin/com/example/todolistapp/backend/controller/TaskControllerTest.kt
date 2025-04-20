@@ -27,12 +27,14 @@ class TaskControllerTest {
     @Test
     fun `api task に POST したとき、200 OK が返る`() {
         // Given
+        every { mockTaskService.saveTask(any()) } returns Unit
 
         // When
         val result =
             mockMvc.perform(
                 post("/api/task")
-                    .contentType(MediaType.APPLICATION_JSON),
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""{"task":"これがないとテストが失敗するよ"}"""),
             )
 
         // Then
@@ -48,11 +50,7 @@ class TaskControllerTest {
         mockMvc.perform(
             post("/api/task")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                    {"task": "テストタスク"}
-                    """.trimIndent(),
-                ),
+                .content("""{"task":"テストタスク"}"""),
         )
 
         // Then
