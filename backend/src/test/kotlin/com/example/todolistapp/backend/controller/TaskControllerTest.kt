@@ -1,5 +1,9 @@
 package com.example.todolistapp.backend.controller
 
+import com.example.todolistapp.backend.service.TaskService
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -11,25 +15,47 @@ import kotlin.test.Test
 class TaskControllerTest {
     private lateinit var mockMvc: MockMvc
     private lateinit var taskController: TaskController
+    private lateinit var mockTaskService: TaskService
 
     @BeforeEach
     fun setup() {
-        taskController = TaskController()
+        mockTaskService = mockk()
+        taskController = TaskController(mockTaskService)
         mockMvc = MockMvcBuilders.standaloneSetup(taskController).build()
     }
 
     @Test
     fun `api task に POST したとき、200 OK が返る`() {
-        // GIVEN
+        // Given
 
-        // WHEN
+        // When
         val result =
             mockMvc.perform(
                 post("/api/task")
                     .contentType(MediaType.APPLICATION_JSON),
             )
 
-        // THEN
+        // Then
         result.andExpect(status().isOk)
+    }
+
+    @Test
+    fun `api task に POST したとき、タスクをサービスに渡している`() {
+        // Given
+        every { mockTaskService.saveTask(any()) } returns Unit
+
+        // When
+        mockMvc.perform(
+            post("/api/task")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {"task": "テストタスク"}
+                    """.trimIndent(),
+                ),
+        )
+
+        // Then
+        verify { mockTaskService.saveTask("テストタスク") }
     }
 }
