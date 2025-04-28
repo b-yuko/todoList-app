@@ -1,3 +1,5 @@
+all:
+
 front:
 	cd frontend && npm run dev
 
@@ -18,3 +20,11 @@ back-check:
 	cd backend && ./gradlew ktlintCheck
 	cd backend && ./gradlew test
 	cd backend && ./gradlew build -x test
+
+# フロントエンドのパッケージをアップデート
+fe-up:
+	cd frontend && ncu -i
+
+# バックエンドのパッケージをアップデート
+be-up:
+	cd backend && ./gradlew dependencyUpdates

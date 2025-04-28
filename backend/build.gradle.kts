@@ -3,9 +3,10 @@ val mockitoAgent: Configuration by configurations.creating
 plugins {
     kotlin("jvm") version "2.1.20"
     kotlin("plugin.spring") version "2.1.20"
-    id("org.springframework.boot") version "3.4.4"
+    id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 group = "com.example"
@@ -34,7 +35,7 @@ dependencies {
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.4") { isTransitive = false }
+    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.15.11") { isTransitive = false }
 }
 
 kotlin {
@@ -54,5 +55,30 @@ ktlint {
 
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+    }
+}
+
+// DependencyUpdatesタスクの設定。依存関係の更新チェック時に、特定の条件に合致するバージョンを無視するように設定します。
+tasks.named<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>("dependencyUpdates") {
+    rejectVersionIf {
+        // 管理対象の依存関係リストを定義します。これらの依存関係は自動更新の対象外とします。
+        val managedDependencies =
+            setOf(
+                "org.springframework.boot:spring-boot-starter-web",
+                "com.fasterxml.jackson.module:jackson-module-kotlin",
+                "org.jetbrains.kotlin:kotlin-reflect",
+                "org.springframework.boot:spring-boot-devtools",
+                "org.springframework.boot:spring-boot-starter-test",
+                "org.jetbrains.kotlin:kotlin-test-junit5",
+                "org.junit.platform:junit-platform-launcher",
+            )
+
+        // 更新候補の依存関係が管理対象リストに含まれているかをチェックします。
+        val isManaged = "${candidate.group}:${candidate.module}" in managedDependencies
+        // 更新候補のバージョンが、alpha、beta、rc、cr、mといった非安定版の識別子を含んでいるかをチェックします（大文字・小文字を区別しません）。
+        val isNonStable = candidate.version.contains(Regex("(?i).*[.-](alpha|beta|rc|cr|m)[.\\d-]*"))
+
+        // 管理対象の依存関係であるか、または非安定版のバージョンである場合は、更新を拒否します。
+        isManaged || isNonStable
     }
 }
