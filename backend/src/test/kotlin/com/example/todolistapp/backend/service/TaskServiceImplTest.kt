@@ -1,5 +1,7 @@
 package com.example.todolistapp.backend.service
 
+import com.example.todolistapp.backend.common.IdProvider
+import com.example.todolistapp.backend.common.TimeProvider
 import com.example.todolistapp.backend.model.KeyValueModel
 import com.example.todolistapp.backend.repository.KeyValueRepository
 import io.mockk.every
@@ -16,16 +18,16 @@ class TaskServiceImplTest {
     fun `saveTask が呼ばれたとき、Repository に保存を要求する`() {
         // Given
         val spyKeyValueRepository = mockk<KeyValueRepository>(relaxed = true)
-        val service = TaskServiceImpl(spyKeyValueRepository)
+        val stubIdProvider = mockk<IdProvider>()
+        val stubTimeProvider = mockk<TimeProvider>()
 
         val expectedTaskId = "testTaskId"
-        mockkStatic(UUID::class)
-        every { UUID.randomUUID().toString() } returns expectedTaskId
+        val expectedCreatedAt = 1_000_000L
 
-        val fixedInstant = Instant.parse("2025-04-29T09:13:37.470Z")
-        val expectedCreatedAt = fixedInstant.toEpochMilli()
-        mockkStatic(Instant::class)
-        every { Instant.now() } returns fixedInstant
+        every { stubIdProvider.generate() } returns expectedTaskId
+        every { stubTimeProvider.nowEpochMilli() } returns expectedCreatedAt
+
+        val service = TaskServiceImpl(spyKeyValueRepository, stubIdProvider, stubTimeProvider)
 
         // When
         service.saveTask("テスト用のタスクです")
@@ -40,8 +42,5 @@ class TaskServiceImplTest {
                 ),
             )
         }
-
-        unmockkStatic(Instant::class)
-        unmockkStatic(UUID::class)
     }
 }
