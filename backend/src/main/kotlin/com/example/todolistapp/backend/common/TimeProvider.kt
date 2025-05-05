@@ -1,7 +1,7 @@
 package com.example.todolistapp.backend.common
 
-import java.time.Instant
 import org.springframework.stereotype.Component
+import java.time.Instant
 
 interface TimeProvider {
     fun nowEpochMilli(): Long
