@@ -1,7 +1,7 @@
 package com.example.todolistapp.backend.common
 
-import java.util.UUID
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 interface IdProvider {
     fun generate(): String

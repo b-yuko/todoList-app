@@ -1,6 +1,9 @@
 package com.example.todolistapp.backend.model
 
-data class KeyValueModel(
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
+
+@DynamoDbBean
+data class TaskModel(
     // パーティションキー
     var taskId: String = "",
     // ソートキー(UTC 数値で保存する)
