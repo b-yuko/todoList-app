@@ -1,10 +1,18 @@
 package com.example.todolistapp.backend
 
+import jakarta.validation.constraints.NotBlank
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
 @Configuration
+@ConfigurationProperties(prefix = "dynamo.datasource")
 class DynamoDbProperties {
-    val dynamoDbUrl: String = "http://localhost:8000"
-    val dynamoDbRegion: String = "ap-northeast-1"
-    val dynamoDbTableName: String = "todo-tasks-local"
+    @NotBlank
+    lateinit var url: String
+
+    @NotBlank
+    lateinit var region: String
+
+    @NotBlank
+    lateinit var tableName: String
 }

@@ -1,6 +1,8 @@
 package com.example.todolistapp.backend
 
 import com.example.todolistapp.backend.model.TaskModel
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.DependsOn
@@ -17,8 +19,10 @@ import java.net.URI
  */
 @Configuration
 class DynamoDbClientConfig(
-    private val properties: DynamoDbProperties,
+    private val dynamoDbProperties: DynamoDbProperties,
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(DynamoDbClientConfig::class.java)
+
     /**
      * DynamoDbClient を生成して Bean として登録する。
      * DynamoDB の低レベル API にアクセスするためのクライアント。
@@ -26,14 +30,14 @@ class DynamoDbClientConfig(
     @Bean
     fun dynamoDbRawClient(): DynamoDbClient {
         // 接続先やリージョンの確認ログ（デバッグ用）
-        println("DynamoDB client initialized: url=${properties.dynamoDbUrl}, region=${properties.dynamoDbRegion}")
+        logger.info("DynamoDB client initialized: url={}, region={}", dynamoDbProperties.url, dynamoDbProperties.region)
 
         // DynamoDbClient のインスタンスを構築して返す
         return DynamoDbClient
             .builder()
-            .region(Region.of(properties.dynamoDbRegion))
+            .region(Region.of(dynamoDbProperties.region))
             // ローカル環境用にDynamoDBのエンドポイントを上書き
-            .endpointOverride(URI.create(properties.dynamoDbUrl))
+            .endpointOverride(URI.create(dynamoDbProperties.url))
             .build()
     }
 
@@ -42,23 +46,24 @@ class DynamoDbClientConfig(
      * DynamoDB の高レベル API にアクセスできるようにする（データモデルとのマッピングが簡単になる）。
      */
     @Bean
-    fun dynamoDbEnhancedClient(): DynamoDbEnhancedClient {
+    fun dynamoDbEnhancedClient(dynamoDbRawClient: DynamoDbClient): DynamoDbEnhancedClient {
+        logger.info("Initializing DynamoDbEnhancedClient")
         // 先に定義した raw client を使って enhanced client を構築
         return DynamoDbEnhancedClient
             .builder()
-            .dynamoDbClient(dynamoDbRawClient())
+            .dynamoDbClient(dynamoDbRawClient)
             .build()
     }
 
     /**
-     * KeyValueModel 用の DynamoDbTable を生成して Bean として登録する。
-     * DynamoDbEnhancedClient を使って、DynamoDB テーブルと Kotlin データクラス（KeyValueModel）を
+     * TaskModel 用の DynamoDbTable を生成して Bean として登録する。
+     * DynamoDbEnhancedClient を使って、DynamoDB テーブルと Kotlin データクラス（TaskModel）を
      * マッピングするオブジェクトを作成する。
      */
     @Bean
     @DependsOn("dynamoDbEnhancedClient")
     fun keyValueModelTable(dynamoDbEnhancedClient: DynamoDbEnhancedClient): DynamoDbTable<TaskModel> {
         val tableSchema = TableSchema.fromBean(TaskModel::class.java)
-        return dynamoDbEnhancedClient.table(properties.dynamoDbTableName, tableSchema)
+        return dynamoDbEnhancedClient.table(dynamoDbProperties.tableName, tableSchema)
     }
 }

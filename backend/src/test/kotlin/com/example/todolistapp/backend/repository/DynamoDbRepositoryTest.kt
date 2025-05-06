@@ -18,7 +18,7 @@ class DynamoDbRepositoryTest {
         )
 
     @Test
-    fun `save すると DynamoDB に putItem する`() {
+    fun `save したとき DynamoDB に putItem する`() {
         // Given
         val spyTable = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
         val repository = DynamoDbTaskRepository(spyTable)
@@ -28,11 +28,11 @@ class DynamoDbRepositoryTest {
         repository.save(inputModel)
 
         // Then
-        verify { spyTable.putItem(inputModel) }
+        verify(exactly = 1) { spyTable.putItem(inputModel) }
     }
 
     @Test
-    fun `save が成功した場合 Result_success を返す`() {
+    fun `save が成功したとき Result_success を返す`() {
         // Given
         val table = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
         val repository = DynamoDbTaskRepository(table)
@@ -43,11 +43,11 @@ class DynamoDbRepositoryTest {
 
         // Then
         assertTrue(result.isSuccess)
-        verify { table.putItem(inputModel) }
+        verify(exactly = 1) { table.putItem(inputModel) }
     }
 
     @Test
-    fun `save が失敗した場合 Result_failure を返す`() {
+    fun `save が失敗したとき Result_failure を返す`() {
         // Given
         val table = mockk<DynamoDbTable<TaskModel>>()
         val repository = DynamoDbTaskRepository(table)
@@ -62,6 +62,6 @@ class DynamoDbRepositoryTest {
         // Then
         assertTrue(result.isFailure)
         assertEquals(exception, result.exceptionOrNull())
-        verify { table.putItem(inputModel) }
+        verify(exactly = 1) { table.putItem(inputModel) }
     }
 }
