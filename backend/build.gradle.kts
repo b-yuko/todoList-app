@@ -1,11 +1,11 @@
 val mockitoAgent: Configuration by configurations.creating
 
 plugins {
-    kotlin("jvm") version "2.1.20"
-    kotlin("plugin.spring") version "2.1.20"
-    id("org.springframework.boot") version "3.4.5"
+    kotlin("jvm") version "2.1.21"
+    kotlin("plugin.spring") version "2.1.21"
+    id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
     id("com.github.ben-manes.versions") version "0.52.0"
 }
 
@@ -31,11 +31,11 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.14.0")
+    testImplementation("io.mockk:mockk:1.14.2")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.15.11") { isTransitive = false }
+    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.5") { isTransitive = false }
 }
 
 kotlin {
@@ -50,7 +50,7 @@ tasks.withType<Test> {
 }
 
 ktlint {
-    version.set("1.5.0")
+    version.set("1.6.0")
     verbose.set(true)
 
     reporters {
