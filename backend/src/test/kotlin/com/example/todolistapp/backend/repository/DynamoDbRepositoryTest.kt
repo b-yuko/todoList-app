@@ -18,11 +18,12 @@ class DynamoDbRepositoryTest {
         )
 
     @Test
-    fun `save したとき DynamoDB に putItem する`() {
+    fun `save() を呼ぶと table putItem が一度だけ呼ばれること`() {
         // Given
-        val spyTable = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
+        val spyTable = mockk<DynamoDbTable<TaskModel>>()
         val repository = DynamoDbTaskRepository(spyTable)
         val inputModel = createTestTaskModel()
+        every { spyTable.putItem(any<TaskModel>()) } returns Unit
 
         // When
         repository.save(inputModel)
@@ -32,7 +33,7 @@ class DynamoDbRepositoryTest {
     }
 
     @Test
-    fun `save が成功したとき Result_success を返す`() {
+    fun `正常に保存できたとき、Result success(Unit) を返すこと`() {
         // Given
         val table = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
         val repository = DynamoDbTaskRepository(table)

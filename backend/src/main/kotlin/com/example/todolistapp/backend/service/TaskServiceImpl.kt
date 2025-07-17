@@ -6,8 +6,12 @@ import com.example.todolistapp.backend.model.TaskModel
 import com.example.todolistapp.backend.repository.TaskRepository
 import org.springframework.stereotype.Service
 
+data class TaskRequest(
+    val task: String,
+)
+
 interface TaskService {
-    fun saveTask(task: String)
+    fun saveTask(taskRequest: TaskRequest)
 }
 
 @Service
@@ -16,7 +20,7 @@ class TaskServiceImpl(
     private val idProvider: IdProvider,
     private val timeProvider: TimeProvider,
 ) : TaskService {
-    override fun saveTask(task: String) {
+    override fun saveTask(taskRequest: TaskRequest) {
         val taskId = idProvider.generate()
         val createdAt = timeProvider.nowEpochMilli()
 
@@ -24,7 +28,7 @@ class TaskServiceImpl(
             TaskModel(
                 taskId = taskId,
                 createdAt = createdAt,
-                taskTitle = task,
+                taskTitle = taskRequest.task,
             ),
         )
     }

@@ -1,5 +1,6 @@
 package com.example.todolistapp.backend.controller
 
+import com.example.todolistapp.backend.service.TaskRequest
 import com.example.todolistapp.backend.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
@@ -54,6 +55,8 @@ class TaskControllerTest {
         )
 
         // Then
-        verify { mockTaskService.saveTask("テストタスク") }
+        val request = TaskRequest(task = "テストタスク")
+
+        verify { mockTaskService.saveTask(request) }
     }
 }

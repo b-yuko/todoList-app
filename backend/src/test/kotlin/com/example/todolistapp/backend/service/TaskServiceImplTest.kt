@@ -26,7 +26,8 @@ class TaskServiceImplTest {
         val service = TaskServiceImpl(spyKeyValueRepository, stubIdProvider, stubTimeProvider)
 
         // When
-        service.saveTask("テスト用のタスクです")
+        val request = TaskRequest(task = "テスト用のタスクです")
+        service.saveTask(request)
 
         // Then
         verify {

@@ -14,6 +14,11 @@ class DynamoDbTaskRepository(
 ) : TaskRepository {
     override fun save(model: TaskModel): Result<Unit> =
         runCatching {
+            println("TaskModel class loader: ${TaskModel::class.java.classLoader}")
+            println("model instance class loader: ${model.javaClass.classLoader}")
+
             table.putItem(model)
+        }.onFailure {
+            it.printStackTrace() // ここで例外内容を標準出力に出す
         }
 }

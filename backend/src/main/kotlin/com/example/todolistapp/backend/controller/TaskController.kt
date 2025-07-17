@@ -1,14 +1,11 @@
 package com.example.todolistapp.backend.controller
 
+import com.example.todolistapp.backend.service.TaskRequest
 import com.example.todolistapp.backend.service.TaskService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
-data class TaskRequest(
-    val task: String,
-)
 
 @RestController
 @RequestMapping("/api/task")
@@ -17,8 +14,8 @@ class TaskController(
 ) {
     @PostMapping
     fun saveTask(
-        @RequestBody request: TaskRequest,
+        @RequestBody taskRequest: TaskRequest,
     ) {
-        taskService.saveTask(request.task)
+        taskService.saveTask(taskRequest)
     }
 }
