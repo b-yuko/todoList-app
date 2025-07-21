@@ -85,7 +85,7 @@ describe("TodoPage", () => {
 
       // Then
       expect(spyTaskRepository.saveTask).toHaveBeenCalledWith({
-        task: "テストタスク",
+        title: "テストタスク",
       });
     });
 
@@ -102,7 +102,7 @@ describe("TodoPage", () => {
 
         //Then
         expect(spyTaskRepository.saveTask).toHaveBeenCalledWith({
-          task: "テストタスク",
+          title: "テストタスク",
         });
       });
       it("入力欄をクリアする", async () => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export type Task = {
-  task: string;
+  title: string;
 };
 
 export interface TaskRepository {
