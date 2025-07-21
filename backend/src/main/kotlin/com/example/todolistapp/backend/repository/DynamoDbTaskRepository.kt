@@ -1,24 +1,27 @@
 package com.example.todolistapp.backend.repository
 
-import com.example.todolistapp.backend.model.TaskModel
+import com.example.todolistapp.backend.entity.TaskEntity
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
 
 interface TaskRepository {
-    fun save(model: TaskModel): Result<Unit>
+    fun save(model: TaskEntity): Result<Unit>
 }
 
 @Repository
 class DynamoDbTaskRepository(
-    private val table: DynamoDbTable<TaskModel>,
+    private val table: DynamoDbTable<TaskEntity>,
 ) : TaskRepository {
-    override fun save(model: TaskModel): Result<Unit> =
+    private val logger = LoggerFactory.getLogger(DynamoDbTaskRepository::class.java)
+
+    override fun save(model: TaskEntity): Result<Unit> =
         runCatching {
-            println("TaskModel class loader: ${TaskModel::class.java.classLoader}")
-            println("model instance class loader: ${model.javaClass.classLoader}")
+            logger.debug("TaskModel class loader: {}", TaskEntity::class.java.classLoader)
+            logger.debug("model instance class loader: {}", model.javaClass.classLoader)
 
             table.putItem(model)
         }.onFailure {
-            it.printStackTrace() // ここで例外内容を標準出力に出す
+            logger.error("Failed to save TaskModel", it)
         }
 }

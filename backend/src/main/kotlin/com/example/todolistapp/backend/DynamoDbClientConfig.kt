@@ -1,6 +1,6 @@
 package com.example.todolistapp.backend
 
-import com.example.todolistapp.backend.model.TaskModel
+import com.example.todolistapp.backend.entity.TaskEntity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -62,8 +62,8 @@ class DynamoDbClientConfig(
      */
     @Bean
     @DependsOn("dynamoDbEnhancedClient")
-    fun keyValueModelTable(dynamoDbEnhancedClient: DynamoDbEnhancedClient): DynamoDbTable<TaskModel> {
-        val tableSchema = TableSchema.fromBean(TaskModel::class.java)
+    fun keyValueModelTable(dynamoDbEnhancedClient: DynamoDbEnhancedClient): DynamoDbTable<TaskEntity> {
+        val tableSchema = TableSchema.fromBean(TaskEntity::class.java)
         return dynamoDbEnhancedClient.table(dynamoDbProperties.tableName, tableSchema)
     }
 }
