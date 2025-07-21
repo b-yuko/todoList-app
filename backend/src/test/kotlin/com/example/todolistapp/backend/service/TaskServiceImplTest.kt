@@ -2,7 +2,8 @@ package com.example.todolistapp.backend.service
 
 import com.example.todolistapp.backend.common.IdProvider
 import com.example.todolistapp.backend.common.TimeProvider
-import com.example.todolistapp.backend.model.TaskModel
+import com.example.todolistapp.backend.dto.CreateTaskRequest
+import com.example.todolistapp.backend.entity.TaskEntity
 import com.example.todolistapp.backend.repository.TaskRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 class TaskServiceImplTest {
     @Test
-    fun `saveTask が呼ばれたとき、Repository に保存を要求する`() {
+    fun `createTask が呼ばれたとき、Repository に保存を要求する`() {
         // Given
         val spyKeyValueRepository = mockk<TaskRepository>(relaxed = true)
         val stubIdProvider = mockk<IdProvider>()
@@ -26,16 +27,16 @@ class TaskServiceImplTest {
         val service = TaskServiceImpl(spyKeyValueRepository, stubIdProvider, stubTimeProvider)
 
         // When
-        val request = TaskRequest(task = "テスト用のタスクです")
-        service.saveTask(request)
+        val request = CreateTaskRequest(title = "テスト用のタスクです")
+        service.createTask(request)
 
         // Then
         verify {
             spyKeyValueRepository.save(
-                TaskModel(
-                    taskId = expectedTaskId,
+                TaskEntity(
+                    id = expectedTaskId,
                     createdAt = expectedCreatedAt,
-                    taskTitle = "テスト用のタスクです",
+                    title = "テスト用のタスクです",
                 ),
             )
         }

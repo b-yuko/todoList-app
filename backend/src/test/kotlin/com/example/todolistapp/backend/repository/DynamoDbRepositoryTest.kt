@@ -1,6 +1,6 @@
 package com.example.todolistapp.backend.repository
 
-import com.example.todolistapp.backend.model.TaskModel
+import com.example.todolistapp.backend.entity.TaskEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -10,20 +10,20 @@ import org.junit.jupiter.api.Test
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
 
 class DynamoDbRepositoryTest {
-    private fun createTestTaskModel(): TaskModel =
-        TaskModel(
-            taskId = "test-id",
+    private fun createTestTaskModel(): TaskEntity =
+        TaskEntity(
+            id = "test-id",
             createdAt = 1234567890000,
-            taskTitle = "Test Task",
+            title = "Test Task",
         )
 
     @Test
     fun `save() を呼ぶと table putItem が一度だけ呼ばれること`() {
         // Given
-        val spyTable = mockk<DynamoDbTable<TaskModel>>()
+        val spyTable = mockk<DynamoDbTable<TaskEntity>>()
         val repository = DynamoDbTaskRepository(spyTable)
         val inputModel = createTestTaskModel()
-        every { spyTable.putItem(any<TaskModel>()) } returns Unit
+        every { spyTable.putItem(any<TaskEntity>()) } returns Unit
 
         // When
         repository.save(inputModel)
@@ -35,7 +35,7 @@ class DynamoDbRepositoryTest {
     @Test
     fun `正常に保存できたとき、Result success(Unit) を返すこと`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
+        val table = mockk<DynamoDbTable<TaskEntity>>(relaxed = true)
         val repository = DynamoDbTaskRepository(table)
         val inputModel = createTestTaskModel()
 
@@ -50,12 +50,12 @@ class DynamoDbRepositoryTest {
     @Test
     fun `save が失敗したとき Result_failure を返す`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskModel>>()
+        val table = mockk<DynamoDbTable<TaskEntity>>()
         val repository = DynamoDbTaskRepository(table)
         val inputModel = createTestTaskModel()
         val exception = RuntimeException("DynamoDB error")
 
-        every { table.putItem(any<TaskModel>()) } throws exception
+        every { table.putItem(any<TaskEntity>()) } throws exception
 
         // When
         val result = repository.save(inputModel)
