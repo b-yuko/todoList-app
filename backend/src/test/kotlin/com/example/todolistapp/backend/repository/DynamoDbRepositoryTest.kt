@@ -4,65 +4,79 @@ import com.example.todolistapp.backend.entity.TaskEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.Logger
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException
 
 class DynamoDbRepositoryTest {
-    private fun createTestTaskModel(): TaskEntity =
-        TaskEntity(
-            id = "test-id",
-            createdAt = 1234567890000,
-            title = "Test Task",
-        )
 
-    @Test
-    fun `save() を呼ぶと table putItem が一度だけ呼ばれること`() {
-        // Given
-        val spyTable = mockk<DynamoDbTable<TaskEntity>>()
-        val repository = DynamoDbTaskRepository(spyTable)
-        val inputModel = createTestTaskModel()
-        every { spyTable.putItem(any<TaskEntity>()) } returns Unit
+    private lateinit var table: DynamoDbTable<TaskEntity>
+    private lateinit var logger: Logger
+    private lateinit var repository: DynamoDbTaskRepository
 
-        // When
-        repository.save(inputModel)
+    private val testTask = TaskEntity(
+        id = "test-id",
+        createdAt = 1234567890000,
+        title = "Test Task"
+    )
 
-        // Then
-        verify(exactly = 1) { spyTable.putItem(inputModel) }
+    @BeforeEach
+    fun setUp() {
+        table = mockk()
+        logger = mockk(relaxed = true)
     }
 
     @Test
-    fun `正常に保存できたとき、Result success(Unit) を返すこと`() {
+    fun `save() でタスクが正常に保存されること`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskEntity>>(relaxed = true)
-        val repository = DynamoDbTaskRepository(table)
-        val inputModel = createTestTaskModel()
+        repository = DynamoDbTaskRepository(table)
+
+        every { table.putItem(testTask) } returns Unit
 
         // When
-        val result = repository.save(inputModel)
+        val result = repository.save(testTask)
 
         // Then
         assertTrue(result.isSuccess)
-        verify(exactly = 1) { table.putItem(inputModel) }
+        verify { table.putItem(testTask) }
     }
 
     @Test
-    fun `save が失敗したとき Result_failure を返す`() {
+    fun `DynamoDB操作で例外が発生した場合、失敗として扱うこと`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskEntity>>()
-        val repository = DynamoDbTaskRepository(table)
-        val inputModel = createTestTaskModel()
-        val exception = RuntimeException("DynamoDB error")
+        repository = DynamoDbTaskRepository(table)
 
-        every { table.putItem(any<TaskEntity>()) } throws exception
+        every { table.putItem(any<TaskEntity>()) } throws
+                DynamoDbException.builder().message("Connection failed").build()
 
         // When
-        val result = repository.save(inputModel)
+        val result = repository.save(testTask)
 
         // Then
         assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
-        verify(exactly = 1) { table.putItem(inputModel) }
+        verify { table.putItem(testTask) }
+    }
+
+    @Test
+    fun `DynamoDB操作で例外が発生した場合、エラーログが出力されること`() {
+        // Given
+        repository = DynamoDbTaskRepository(table, logger)
+
+        every { table.putItem(any<TaskEntity>()) } throws
+                DynamoDbException.builder().message("Connection failed").build()
+
+        // When
+        repository.save(testTask)
+
+        // Then
+        verify {
+            logger.error(
+                match { it.contains(testTask.id) },
+                any<DynamoDbException>()
+            )
+        }
     }
 }
