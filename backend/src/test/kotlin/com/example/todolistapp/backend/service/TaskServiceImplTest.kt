@@ -2,8 +2,9 @@ package com.example.todolistapp.backend.service
 
 import com.example.todolistapp.backend.common.IdProvider
 import com.example.todolistapp.backend.common.TimeProvider
+import com.example.todolistapp.backend.domain.model.common.SavedTaskId
+import com.example.todolistapp.backend.domain.model.task.Task
 import com.example.todolistapp.backend.dto.CreateTaskRequest
-import com.example.todolistapp.backend.entity.TaskEntity
 import com.example.todolistapp.backend.repository.TaskRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -14,15 +15,22 @@ class TaskServiceImplTest {
     @Test
     fun `createTask が呼ばれたとき、Repository に保存を要求する`() {
         // Given
-        val spyKeyValueRepository = mockk<TaskRepository>(relaxed = true)
+        val spyKeyValueRepository = mockk<TaskRepository>()
         val stubIdProvider = mockk<IdProvider>()
         val stubTimeProvider = mockk<TimeProvider>()
 
         val expectedTaskId = "testTaskId"
-        val expectedCreatedAt = 1_000_000L
+        val expectedCreatedAt = "2024-01-15T10:30:45.123Z"
 
         every { stubIdProvider.generate() } returns expectedTaskId
-        every { stubTimeProvider.nowEpochMilli() } returns expectedCreatedAt
+        every { stubTimeProvider.nowAsIso8601() } returns expectedCreatedAt
+        every { spyKeyValueRepository.save(any()) } returns
+            Result.success(
+                SavedTaskId(
+                    id = expectedTaskId,
+                    createdAt = expectedCreatedAt,
+                ),
+            )
 
         val service = TaskServiceImpl(spyKeyValueRepository, stubIdProvider, stubTimeProvider)
 
@@ -33,7 +41,7 @@ class TaskServiceImplTest {
         // Then
         verify {
             spyKeyValueRepository.save(
-                TaskEntity(
+                Task(
                     id = expectedTaskId,
                     createdAt = expectedCreatedAt,
                     title = "テスト用のタスクです",

@@ -1,61 +1,67 @@
 package com.example.todolistapp.backend.handler
 
 import com.example.todolistapp.backend.dto.ErrorResponse
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.context.request.WebRequest
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException::class)
-    fun handleRuntimeException(ex: RuntimeException): ResponseEntity<Any> =
-        ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .build()
+    fun handleRuntimeException(
+        ex: RuntimeException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> {
+        val errorResponse =
+            ErrorResponse(
+                message = "予期せぬエラーが発生しました",
+                status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
+                path = request.requestURI,
+                timestamp = System.currentTimeMillis(),
+            )
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse)
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(
         ex: MethodArgumentNotValidException,
-        request: WebRequest,
+        request: HttpServletRequest,
     ): ResponseEntity<ErrorResponse> {
-        val message =
-            ex.bindingResult.fieldErrors
-                .firstOrNull()
-                ?.defaultMessage
-                ?: "Validation failed"
-
         val errorResponse =
             ErrorResponse(
-                message = message,
+                message =
+                    ex.bindingResult.fieldErrors
+                        .firstOrNull()
+                        ?.defaultMessage ?: "入力内容に誤りがあります",
                 status = HttpStatus.BAD_REQUEST.value(),
                 error = HttpStatus.BAD_REQUEST.reasonPhrase,
-                path = request.getDescription(false).replace("uri=", ""),
+                path = request.requestURI,
+                timestamp = System.currentTimeMillis(),
             )
 
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(errorResponse)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
-        request: WebRequest,
+        request: HttpServletRequest,
     ): ResponseEntity<ErrorResponse> {
         val errorResponse =
             ErrorResponse(
-                message = "リクエストボディが必要です",
+                message = "リクエストの形式が正しくありません",
                 status = HttpStatus.BAD_REQUEST.value(),
                 error = HttpStatus.BAD_REQUEST.reasonPhrase,
-                path = request.getDescription(false).replace("uri=", ""),
+                path = request.requestURI,
+                timestamp = System.currentTimeMillis(),
             )
 
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(errorResponse)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 }

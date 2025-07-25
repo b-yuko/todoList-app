@@ -9,9 +9,9 @@ data class TaskEntity(
     // パーティションキー
     @get:DynamoDbPartitionKey
     var id: String = "",
-    // ソートキー(UTC 数値で保存する)
+    // ソートキー(UTC ISO-8601文字列で保存する)
     @get:DynamoDbSortKey
-    var createdAt: Long = 0L,
+    var createdAt: String = "",
     // タスクのタイトル (NonNull)
     var title: String = "",
 )

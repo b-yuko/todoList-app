@@ -11,7 +11,7 @@ export interface TaskRepository {
 export class TaskRepositoryImpl implements TaskRepository {
   async saveTask(task: Task): Promise<void> {
     try {
-      await axios.post("api/task", task);
+      await axios.post("api/tasks", task);
     } catch (error) {
       console.log(error);
     }

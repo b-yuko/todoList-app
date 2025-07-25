@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 interface TimeProvider {
-    fun nowEpochMilli(): Long
+    fun nowAsIso8601(): String
 }
 
 @Component
 class SystemTimeProvider : TimeProvider {
-    override fun nowEpochMilli(): Long = Instant.now().toEpochMilli()
+    override fun nowAsIso8601(): String = Instant.now().toString()
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 @RestController
-@RequestMapping("/api/task")
+@RequestMapping("/api/tasks")
 class TaskController(
     private val taskService: TaskService,
 ) {
@@ -20,9 +20,18 @@ class TaskController(
     fun createTask(
         @Valid @RequestBody request: CreateTaskRequest,
     ): ResponseEntity<TaskResponse> {
-        val response = taskService.createTask(request)
-        return ResponseEntity
-            .created(URI.create("/api/task/${response.id}"))
-            .body(response)
+        val result = taskService.createTask(request)
+
+        return when {
+            result.isSuccess -> {
+                val response = result.getOrNull()!!
+                ResponseEntity
+                    .created(URI.create("/api/tasks/${response.id}"))
+                    .body(response)
+            }
+            else -> {
+                throw RuntimeException("タスクの作成に失敗しました", result.exceptionOrNull())
+            }
+        }
     }
 }

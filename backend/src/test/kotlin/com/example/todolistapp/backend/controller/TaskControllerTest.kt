@@ -23,6 +23,10 @@ class TaskControllerTest {
     private lateinit var taskController: TaskController
     private lateinit var mockTaskService: TaskService
 
+    companion object {
+        private const val FIXED_TIME = "2024-01-15T10:30:45.123Z"
+    }
+
     @BeforeEach
     fun setUp() {
         // 厳格なモックを使用し、必要なメソッドを明示的にスタブ化
@@ -50,14 +54,20 @@ class TaskControllerTest {
     @DisplayName("正常系")
     inner class SuccessScenarios {
         @Test
-        fun `api task に POST したとき、201 Created が返る`() {
+        fun `api tasks に POST したとき、201 Created が返る`() {
             // Given
-            setupRelaxedMockService()
+            val expectedResponse =
+                TaskResponse(
+                    id = "test-id-123",
+                    createdAt = FIXED_TIME,
+                )
+
+            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
 
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":"これがないとテストが失敗するよ"}"""),
                 )
@@ -67,14 +77,14 @@ class TaskControllerTest {
         }
 
         @Test
-        fun `api task に POST したとき、正しいリクエストデータがサービスに渡される`() {
+        fun `api tasks に POST したとき、正しいリクエストデータがサービスに渡される`() {
             // Given
             setupRelaxedMockService()
             val expectedTitle = "テストタスク"
 
             // When
             mockMvc.perform(
-                post("/api/task")
+                post("/api/tasks")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""{"title":"$expectedTitle"}"""),
             )
@@ -89,15 +99,15 @@ class TaskControllerTest {
             val expectedResponse =
                 TaskResponse(
                     id = "test-id-123",
-                    createdAt = 1234567890L,
-                    title = "テストタスク",
+                    createdAt = FIXED_TIME,
                 )
-            every { mockTaskService.createTask(any()) } returns expectedResponse
+
+            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
 
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":"テストタスク"}"""),
                 )
@@ -106,7 +116,6 @@ class TaskControllerTest {
             result
                 .andExpect(jsonPath("$.id").value(expectedResponse.id))
                 .andExpect(jsonPath("$.createdAt").value(expectedResponse.createdAt))
-                .andExpect(jsonPath("$.title").value(expectedResponse.title))
         }
 
         @Test
@@ -115,21 +124,20 @@ class TaskControllerTest {
             val expectedResponse =
                 TaskResponse(
                     id = "test-id-123",
-                    createdAt = 1234567890L,
-                    title = "テストタスク",
+                    createdAt = FIXED_TIME,
                 )
-            every { mockTaskService.createTask(any()) } returns expectedResponse
+            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
 
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":"テストタスク"}"""),
                 )
 
             // Then
-            result.andExpect(header().string("Location", "/api/task/test-id-123"))
+            result.andExpect(header().string("Location", "/api/tasks/test-id-123"))
         }
     }
 
@@ -141,7 +149,7 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":""}"""),
                 )
@@ -155,18 +163,18 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":""}"""),
                 )
 
             // Then
             result
-                .andExpect(jsonPath("$.message").value("title must not be blank"))
+                .andExpect(jsonPath("$.message").value("タイトルを入力してください"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.error").value("Bad Request"))
                 .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.path").value("/api/task"))
+                .andExpect(jsonPath("$.path").value("/api/tasks"))
         }
 
         @Test
@@ -174,7 +182,7 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":null}"""),
                 )
@@ -188,7 +196,7 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON),
                 )
 
@@ -198,13 +206,16 @@ class TaskControllerTest {
 
         @Test
         fun `不正なJSONの場合、400 Bad Request が返る`() {
+            // Given
+            @Suppress("JsonStandardCompliance")
+            val invalidJson = """{"title":"テストタスク"""
+
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
-                        // 閉じ括弧が足りない
-                        .content("""{"title":"テストタスク"""),
+                        .content(invalidJson),
                 )
 
             // Then
@@ -216,7 +227,7 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.TEXT_PLAIN)
                         .content("テストタスク"),
                 )
@@ -234,7 +245,7 @@ class TaskControllerTest {
             // When
             val result =
                 mockMvc.perform(
-                    post("/api/task")
+                    post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""{"title":"テストタスク"}"""),
                 )

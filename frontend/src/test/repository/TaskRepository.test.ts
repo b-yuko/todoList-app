@@ -3,7 +3,7 @@ import axios from "axios";
 import { TaskRepositoryImpl } from "@/app/repository/TaskRepository.ts";
 
 describe("TaskRepository", () => {
-  it("saveTask を呼んだとき、/api/task に task を POST する", async () => {
+  it("saveTask を呼んだとき、/api/tasks に task を POST する", async () => {
     // Given
     vi.spyOn(axios, "post").mockResolvedValue("");
     const taskRepository = new TaskRepositoryImpl();
@@ -14,12 +14,12 @@ describe("TaskRepository", () => {
     });
 
     // Then
-    expect(axios.post).toHaveBeenCalledWith("api/task", {
+    expect(axios.post).toHaveBeenCalledWith("api/tasks", {
       title: "タスクをバックエンドに送信するよ",
     });
   });
 
-  it("aveTask が失敗したとき、エラーをキャッチしてログに出力する", async () => {
+  it("saveTask が失敗したとき、エラーをキャッチしてログに出力する", async () => {
     // Given
     const spyConsole = vi.spyOn(console, "log");
     vi.spyOn(axios, "post").mockRejectedValue(new Error("API エラー"));
