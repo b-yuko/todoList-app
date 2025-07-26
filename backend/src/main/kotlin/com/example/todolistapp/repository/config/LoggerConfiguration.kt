@@ -1,6 +1,6 @@
-package com.example.todolistapp.backend.repository.impl.config
+package com.example.todolistapp.repository.config
 
-import com.example.todolistapp.backend.repository.impl.TaskRepositoryImpl
+import com.example.todolistapp.repository.TaskRepositoryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean

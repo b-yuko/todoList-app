@@ -1,8 +1,9 @@
 package com.example.todolistapp.backend.repository
 
-import com.example.todolistapp.backend.domain.model.task.Task
-import com.example.todolistapp.backend.entity.TaskEntity
-import com.example.todolistapp.backend.repository.impl.TaskRepositoryImpl
+import com.example.todolistapp.domain.Task
+import com.example.todolistapp.repository.TaskRepository
+import com.example.todolistapp.repository.TaskRepositoryImpl
+import com.example.todolistapp.repository.entity.TaskEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

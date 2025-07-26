@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.common
+package com.example.todolistapp.common
 
 import org.springframework.stereotype.Component
 import java.time.Instant

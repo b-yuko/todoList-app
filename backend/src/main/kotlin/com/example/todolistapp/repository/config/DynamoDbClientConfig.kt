@@ -1,7 +1,7 @@
-package com.example.todolistapp.backend.repository.impl.config
+package com.example.todolistapp.repository.config
 
-import com.example.todolistapp.backend.config.DynamoDbProperties
-import com.example.todolistapp.backend.entity.TaskEntity
+import com.example.todolistapp.config.DynamoDbProperties
+import com.example.todolistapp.repository.entity.TaskEntity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean

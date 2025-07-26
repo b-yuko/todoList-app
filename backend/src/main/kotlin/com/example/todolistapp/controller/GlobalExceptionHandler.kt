@@ -1,6 +1,6 @@
-package com.example.todolistapp.backend.handler
+package com.example.todolistapp.controller
 
-import com.example.todolistapp.backend.dto.ErrorResponse
+import com.example.todolistapp.controller.dto.ErrorResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.dto
+package com.example.todolistapp.controller.dto
 
 import jakarta.validation.constraints.NotBlank
 

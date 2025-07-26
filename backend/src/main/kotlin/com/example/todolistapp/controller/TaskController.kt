@@ -1,8 +1,8 @@
-package com.example.todolistapp.backend.controller
+package com.example.todolistapp.controller
 
-import com.example.todolistapp.backend.dto.CreateTaskRequest
-import com.example.todolistapp.backend.dto.TaskResponse
-import com.example.todolistapp.backend.service.TaskService
+import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.controller.dto.TaskResponse
+import com.example.todolistapp.service.TaskService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

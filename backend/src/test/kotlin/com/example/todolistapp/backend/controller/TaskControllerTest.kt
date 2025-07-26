@@ -1,8 +1,9 @@
 package com.example.todolistapp.backend.controller
 
-import com.example.todolistapp.backend.dto.TaskResponse
-import com.example.todolistapp.backend.handler.GlobalExceptionHandler
-import com.example.todolistapp.backend.service.TaskService
+import com.example.todolistapp.controller.GlobalExceptionHandler
+import com.example.todolistapp.controller.TaskController
+import com.example.todolistapp.controller.dto.TaskResponse
+import com.example.todolistapp.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

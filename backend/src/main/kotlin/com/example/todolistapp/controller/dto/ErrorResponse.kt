@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.dto
+package com.example.todolistapp.controller.dto
 
 data class ErrorResponse(
     val message: String,

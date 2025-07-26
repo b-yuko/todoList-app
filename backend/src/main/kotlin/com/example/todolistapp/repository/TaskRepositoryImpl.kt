@@ -1,9 +1,7 @@
-package com.example.todolistapp.backend.repository.impl
+package com.example.todolistapp.repository
 
-import com.example.todolistapp.backend.domain.model.common.SavedTaskId
-import com.example.todolistapp.backend.domain.model.task.Task
-import com.example.todolistapp.backend.entity.TaskEntity
-import com.example.todolistapp.backend.repository.TaskRepository
+import com.example.todolistapp.domain.Task
+import com.example.todolistapp.repository.entity.TaskEntity
 import org.slf4j.Logger
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
@@ -13,7 +11,7 @@ class TaskRepositoryImpl(
     private val table: DynamoDbTable<TaskEntity>,
     private val logger: Logger,
 ) : TaskRepository {
-    override fun save(task: Task): Result<SavedTaskId> =
+    override fun save(task: Task): Result<Task> =
         runCatching {
             logger.info("Saving task: ID={}, title={}", task.id, task.title)
 
@@ -26,9 +24,10 @@ class TaskRepositoryImpl(
 
             table.putItem(taskEntity)
 
-            SavedTaskId(
+            Task(
                 id = taskEntity.id,
                 createdAt = taskEntity.createdAt,
+                title = taskEntity.title,
             )
         }.onSuccess {
             logger.info("Successfully saved task: ID={}, title={}", task.id, task.title)

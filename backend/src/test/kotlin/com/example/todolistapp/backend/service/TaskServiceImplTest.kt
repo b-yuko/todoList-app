@@ -1,12 +1,11 @@
 package com.example.todolistapp.backend.service
 
-import com.example.todolistapp.backend.common.IdProvider
-import com.example.todolistapp.backend.common.TimeProvider
-import com.example.todolistapp.backend.domain.model.common.SavedTaskId
-import com.example.todolistapp.backend.domain.model.task.Task
-import com.example.todolistapp.backend.dto.CreateTaskRequest
-import com.example.todolistapp.backend.repository.TaskRepository
-import com.example.todolistapp.backend.service.impl.TaskServiceImpl
+import com.example.todolistapp.common.IdProvider
+import com.example.todolistapp.common.TimeProvider
+import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.domain.Task
+import com.example.todolistapp.repository.TaskRepository
+import com.example.todolistapp.service.TaskServiceImpl
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -27,9 +26,10 @@ class TaskServiceImplTest {
         every { stubTimeProvider.nowAsIso8601() } returns expectedCreatedAt
         every { spyKeyValueRepository.save(any()) } returns
             Result.success(
-                SavedTaskId(
+                Task(
                     id = expectedTaskId,
                     createdAt = expectedCreatedAt,
+                    title = "テスト用のタスクです",
                 ),
             )
 

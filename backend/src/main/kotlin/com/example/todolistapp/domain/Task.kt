@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.domain.model.task
+package com.example.todolistapp.domain
 
 data class Task(
     val id: String,

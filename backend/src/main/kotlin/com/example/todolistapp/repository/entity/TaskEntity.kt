@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.entity
+package com.example.todolistapp.repository.entity
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey

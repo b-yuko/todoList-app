@@ -1,12 +1,11 @@
-package com.example.todolistapp.backend.service.impl
+package com.example.todolistapp.service
 
-import com.example.todolistapp.backend.common.IdProvider
-import com.example.todolistapp.backend.common.TimeProvider
-import com.example.todolistapp.backend.domain.model.task.Task
-import com.example.todolistapp.backend.dto.CreateTaskRequest
-import com.example.todolistapp.backend.dto.TaskResponse
-import com.example.todolistapp.backend.repository.TaskRepository
-import com.example.todolistapp.backend.service.TaskService
+import com.example.todolistapp.common.IdProvider
+import com.example.todolistapp.common.TimeProvider
+import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.controller.dto.TaskResponse
+import com.example.todolistapp.domain.Task
+import com.example.todolistapp.repository.TaskRepository
 import org.springframework.stereotype.Service
 
 @Service
