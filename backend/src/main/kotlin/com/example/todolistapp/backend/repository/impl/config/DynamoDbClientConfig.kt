@@ -1,5 +1,6 @@
-package com.example.todolistapp.backend
+package com.example.todolistapp.backend.repository.impl.config
 
+import com.example.todolistapp.backend.config.DynamoDbProperties
 import com.example.todolistapp.backend.entity.TaskEntity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,7 +29,7 @@ class DynamoDbClientConfig(
      * DynamoDB の低レベル API にアクセスするためのクライアント。
      */
     @Bean
-    fun dynamoDbRawClient(): DynamoDbClient {
+    fun dynamoDbClient(): DynamoDbClient {
         // 接続先やリージョンの確認ログ（デバッグ用）
         logger.info("DynamoDB client initialized: url={}, region={}", dynamoDbProperties.url, dynamoDbProperties.region)
 
@@ -46,12 +47,12 @@ class DynamoDbClientConfig(
      * DynamoDB の高レベル API にアクセスできるようにする（データモデルとのマッピングが簡単になる）。
      */
     @Bean
-    fun dynamoDbEnhancedClient(dynamoDbRawClient: DynamoDbClient): DynamoDbEnhancedClient {
+    fun dynamoDbEnhancedClient(dynamoDbClient: DynamoDbClient): DynamoDbEnhancedClient {
         logger.info("Initializing DynamoDbEnhancedClient")
         // 先に定義した raw client を使って enhanced client を構築
         return DynamoDbEnhancedClient
             .builder()
-            .dynamoDbClient(dynamoDbRawClient)
+            .dynamoDbClient(dynamoDbClient)
             .build()
     }
 
@@ -62,7 +63,7 @@ class DynamoDbClientConfig(
      */
     @Bean
     @DependsOn("dynamoDbEnhancedClient")
-    fun keyValueModelTable(dynamoDbEnhancedClient: DynamoDbEnhancedClient): DynamoDbTable<TaskEntity> {
+    fun todoAppTable(dynamoDbEnhancedClient: DynamoDbEnhancedClient): DynamoDbTable<TaskEntity> {
         val tableSchema = TableSchema.fromBean(TaskEntity::class.java)
         return dynamoDbEnhancedClient.table(dynamoDbProperties.tableName, tableSchema)
     }

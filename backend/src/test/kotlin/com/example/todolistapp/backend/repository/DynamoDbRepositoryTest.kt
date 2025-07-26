@@ -2,6 +2,7 @@ package com.example.todolistapp.backend.repository
 
 import com.example.todolistapp.backend.domain.model.task.Task
 import com.example.todolistapp.backend.entity.TaskEntity
+import com.example.todolistapp.backend.repository.impl.TaskRepositoryImpl
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -15,7 +16,7 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException
 class DynamoDbRepositoryTest {
     private lateinit var table: DynamoDbTable<TaskEntity>
     private lateinit var logger: Logger
-    private lateinit var repository: DynamoDbTaskRepository
+    private lateinit var repository: TaskRepository
 
     companion object {
         private const val FIXED_TIME = "2024-01-15T10:30:45.123Z"
@@ -39,7 +40,7 @@ class DynamoDbRepositoryTest {
     fun setUp() {
         table = mockk()
         logger = mockk(relaxed = true)
-        repository = DynamoDbTaskRepository(table, logger)
+        repository = TaskRepositoryImpl(table, logger)
     }
 
     @Test
@@ -72,7 +73,7 @@ class DynamoDbRepositoryTest {
     @Test
     fun `DynamoDB操作で例外が発生した場合、エラーログが出力されること`() {
         // Given
-        repository = DynamoDbTaskRepository(table, logger)
+        repository = TaskRepositoryImpl(table, logger)
 
         every { table.putItem(any<TaskEntity>()) } throws
             DynamoDbException.builder().message("Connection failed").build()

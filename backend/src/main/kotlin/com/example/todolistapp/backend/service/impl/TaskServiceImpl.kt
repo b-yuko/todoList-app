@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend.service
+package com.example.todolistapp.backend.service.impl
 
 import com.example.todolistapp.backend.common.IdProvider
 import com.example.todolistapp.backend.common.TimeProvider
@@ -6,11 +6,8 @@ import com.example.todolistapp.backend.domain.model.task.Task
 import com.example.todolistapp.backend.dto.CreateTaskRequest
 import com.example.todolistapp.backend.dto.TaskResponse
 import com.example.todolistapp.backend.repository.TaskRepository
+import com.example.todolistapp.backend.service.TaskService
 import org.springframework.stereotype.Service
-
-interface TaskService {
-    fun createTask(createTaskRequest: CreateTaskRequest): Result<TaskResponse>
-}
 
 @Service
 class TaskServiceImpl(
@@ -18,8 +15,8 @@ class TaskServiceImpl(
     private val idProvider: IdProvider,
     private val timeProvider: TimeProvider,
 ) : TaskService {
-    override fun createTask(createTaskRequest: CreateTaskRequest): Result<TaskResponse> {
-        val task = buildTask(createTaskRequest)
+    override fun createTask(request: CreateTaskRequest): Result<TaskResponse> {
+        val task = buildTask(request)
 
         return taskRepository.save(task).map { savedTask ->
             TaskResponse(
@@ -29,14 +26,14 @@ class TaskServiceImpl(
         }
     }
 
-    private fun buildTask(createTaskRequest: CreateTaskRequest): Task {
+    private fun buildTask(request: CreateTaskRequest): Task {
         val taskId = idProvider.generate()
         val createdAt = timeProvider.nowAsIso8601()
 
         return Task(
             id = taskId,
             createdAt = createdAt,
-            title = createTaskRequest.title,
+            title = request.title,
         )
     }
 }

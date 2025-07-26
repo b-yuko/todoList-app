@@ -1,4 +1,4 @@
-package com.example.todolistapp.backend
+package com.example.todolistapp.backend.config
 
 import jakarta.validation.constraints.NotBlank
 import org.springframework.boot.context.properties.ConfigurationProperties

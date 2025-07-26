@@ -1,18 +1,17 @@
-package com.example.todolistapp.backend.repository
+package com.example.todolistapp.backend.repository.impl
 
 import com.example.todolistapp.backend.domain.model.common.SavedTaskId
 import com.example.todolistapp.backend.domain.model.task.Task
 import com.example.todolistapp.backend.entity.TaskEntity
+import com.example.todolistapp.backend.repository.TaskRepository
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
 
 @Repository
-class DynamoDbTaskRepository(
+class TaskRepositoryImpl(
     private val table: DynamoDbTable<TaskEntity>,
-    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-    private val logger: Logger = LoggerFactory.getLogger(DynamoDbTaskRepository::class.java),
+    private val logger: Logger,
 ) : TaskRepository {
     override fun save(task: Task): Result<SavedTaskId> =
         runCatching {
