@@ -2,7 +2,7 @@ package com.example.todolistapp.backend.service
 
 import com.example.todolistapp.common.IdProvider
 import com.example.todolistapp.common.TimeProvider
-import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.controller.dto.TaskRequest
 import com.example.todolistapp.controller.dto.TaskResponse
 import com.example.todolistapp.domain.Task
 import com.example.todolistapp.repository.TaskRepository
@@ -47,7 +47,7 @@ class TaskServiceImplTest {
             val taskService = TaskServiceImpl(spyTaskRepository, stubIdProvider, stubTimeProvider)
 
             // When
-            val request = CreateTaskRequest(title = expectedTitle)
+            val request = TaskRequest(title = expectedTitle)
             val result = taskService.createTask(request)
 
             // Then
@@ -71,7 +71,7 @@ class TaskServiceImplTest {
             val taskService = TaskServiceImpl(spyTaskRepository, stubIdProvider, stubTimeProvider)
 
             // When
-            val request = CreateTaskRequest(title = expectedTitle)
+            val request = TaskRequest(title = expectedTitle)
             taskService.createTask(request)
 
             // Then
@@ -96,7 +96,7 @@ class TaskServiceImplTest {
             val taskService = TaskServiceImpl(spyTaskRepository, stubIdProvider, stubTimeProvider)
 
             // When
-            val request = CreateTaskRequest(title = "テスト用のタスクです")
+            val request = TaskRequest(title = "テスト用のタスクです")
             val result = taskService.createTask(request)
 
             // Then

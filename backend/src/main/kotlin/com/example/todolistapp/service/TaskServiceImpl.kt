@@ -2,7 +2,7 @@ package com.example.todolistapp.service
 
 import com.example.todolistapp.common.IdProvider
 import com.example.todolistapp.common.TimeProvider
-import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.controller.dto.TaskRequest
 import com.example.todolistapp.controller.dto.TaskResponse
 import com.example.todolistapp.domain.Task
 import com.example.todolistapp.repository.TaskRepository
@@ -14,7 +14,7 @@ class TaskServiceImpl(
     private val idProvider: IdProvider,
     private val timeProvider: TimeProvider,
 ) : TaskService {
-    override fun createTask(request: CreateTaskRequest): Result<TaskResponse> {
+    override fun createTask(request: TaskRequest): Result<TaskResponse> {
         val task = buildTask(request)
 
         return taskRepository.save(task).map { savedTask ->
@@ -25,7 +25,7 @@ class TaskServiceImpl(
         }
     }
 
-    private fun buildTask(request: CreateTaskRequest): Task {
+    private fun buildTask(request: TaskRequest): Task {
         val taskId = idProvider.generate()
         val createdAt = timeProvider.nowAsIso8601()
 

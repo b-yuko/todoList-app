@@ -1,6 +1,6 @@
 package com.example.todolistapp.controller
 
-import com.example.todolistapp.controller.dto.CreateTaskRequest
+import com.example.todolistapp.controller.dto.TaskRequest
 import com.example.todolistapp.controller.dto.TaskResponse
 import com.example.todolistapp.service.TaskService
 import jakarta.validation.Valid
@@ -18,7 +18,7 @@ class TaskController(
 ) {
     @PostMapping
     fun createTask(
-        @Valid @RequestBody request: CreateTaskRequest,
+        @Valid @RequestBody request: TaskRequest,
     ): ResponseEntity<TaskResponse> {
         val result = taskService.createTask(request)
 
