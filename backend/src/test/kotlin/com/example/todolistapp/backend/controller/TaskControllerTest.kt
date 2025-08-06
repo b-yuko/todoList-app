@@ -40,17 +40,6 @@ class TaskControllerTest {
                 .build()
     }
 
-    private fun setupRelaxedMockService() {
-        // 例外発生のテストなど、メソッドの実際の振る舞いが重要でないテストケースでのみ使用する
-        mockTaskService = mockk<TaskService>(relaxed = true)
-        taskController = TaskController(mockTaskService)
-        mockMvc =
-            MockMvcBuilders
-                .standaloneSetup(taskController)
-                .setControllerAdvice(GlobalExceptionHandler())
-                .build()
-    }
-
     @Nested
     @DisplayName("正常系")
     inner class SuccessScenarios {
@@ -80,7 +69,6 @@ class TaskControllerTest {
         @Test
         fun `api tasks に POST したとき、正しいリクエストデータがサービスに渡される`() {
             // Given
-            setupRelaxedMockService()
             val expectedTitle = "テストタスク"
 
             // When
@@ -240,7 +228,6 @@ class TaskControllerTest {
         @Test
         fun `サービス層で例外が発生した場合、500 Internal Server Error が返る`() {
             // Given
-            setupRelaxedMockService()
             every { mockTaskService.createTask(any()) } throws RuntimeException("サービスエラー")
 
             // When
