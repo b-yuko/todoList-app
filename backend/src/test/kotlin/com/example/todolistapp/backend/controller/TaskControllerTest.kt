@@ -24,13 +24,8 @@ class TaskControllerTest {
     private lateinit var taskController: TaskController
     private lateinit var mockTaskService: TaskService
 
-    companion object {
-        private const val FIXED_TIME = "2024-01-15T10:30:45.123Z"
-    }
-
     @BeforeEach
     fun setUp() {
-        // 厳格なモックを使用し、必要なメソッドを明示的にスタブ化
         mockTaskService = mockk()
         taskController = TaskController(mockTaskService)
         mockMvc =
@@ -46,13 +41,12 @@ class TaskControllerTest {
         @Test
         fun `api tasks に POST したとき、201 Created が返る`() {
             // Given
-            val expectedResponse =
-                TaskResponse(
-                    id = "test-id-123",
-                    createdAt = FIXED_TIME,
-                )
+            val stubTaskResponse = TaskResponse(
+                id = "stub-id",
+                createdAt = "2000-01-01T00:00:00.000Z",
+            )
 
-            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
+            every { mockTaskService.createTask(any()) } returns Result.success(stubTaskResponse)
 
             // When
             val result =
@@ -87,8 +81,8 @@ class TaskControllerTest {
             // Given
             val expectedResponse =
                 TaskResponse(
-                    id = "test-id-123",
-                    createdAt = FIXED_TIME,
+                    id = "test-id-456",
+                    createdAt = "2025-08-05T15:45:30.789Z",
                 )
 
             every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
@@ -112,8 +106,8 @@ class TaskControllerTest {
             // Given
             val expectedResponse =
                 TaskResponse(
-                    id = "test-id-123",
-                    createdAt = FIXED_TIME,
+                    id = "test-id-789",
+                    createdAt = "2000-01-01T00:00:00.000Z",
                 )
             every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
 
@@ -126,7 +120,7 @@ class TaskControllerTest {
                 )
 
             // Then
-            result.andExpect(header().string("Location", "/api/tasks/test-id-123"))
+            result.andExpect(header().string("Location", "/api/tasks/test-id-789"))
         }
     }
 
