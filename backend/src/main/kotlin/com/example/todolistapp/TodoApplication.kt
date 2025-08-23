@@ -1,11 +1,11 @@
-package com.example.todolistapp.backend
+package com.example.todolistapp
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class BackendApplication
+class TodoApplication
 
 fun main(args: Array<String>) {
-    runApplication<BackendApplication>(*args)
+    runApplication<TodoApplication>(*args)
 }

@@ -1,14 +1,21 @@
 package com.example.todolistapp.backend.controller
 
-import com.example.todolistapp.backend.service.TaskService
+import com.example.todolistapp.controller.GlobalExceptionHandler
+import com.example.todolistapp.controller.TaskController
+import com.example.todolistapp.controller.dto.TaskResponse
+import com.example.todolistapp.service.TaskService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
@@ -21,39 +28,212 @@ class TaskControllerTest {
     fun setUp() {
         mockTaskService = mockk()
         taskController = TaskController(mockTaskService)
-        mockMvc = MockMvcBuilders.standaloneSetup(taskController).build()
+        mockMvc =
+            MockMvcBuilders
+                .standaloneSetup(taskController)
+                .setControllerAdvice(GlobalExceptionHandler())
+                .build()
     }
 
-    @Test
-    fun `api task に POST したとき、200 OK が返る`() {
-        // Given
-        every { mockTaskService.saveTask(any()) } returns Unit
-
-        // When
-        val result =
-            mockMvc.perform(
-                post("/api/task")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("""{"task":"これがないとテストが失敗するよ"}"""),
+    @Nested
+    @DisplayName("正常系")
+    inner class SuccessScenarios {
+        @Test
+        fun `api tasks に POST したとき、201 Created が返る`() {
+            // Given
+            val stubTaskResponse = TaskResponse(
+                id = "stub-id",
+                createdAt = "2000-01-01T00:00:00.000Z",
             )
 
-        // Then
-        result.andExpect(status().isOk)
+            every { mockTaskService.createTask(any()) } returns Result.success(stubTaskResponse)
+
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":"これがないとテストが失敗するよ"}"""),
+                )
+
+            // Then
+            result.andExpect(status().isCreated)
+        }
+
+        @Test
+        fun `api tasks に POST したとき、正しいリクエストデータがサービスに渡される`() {
+            // Given
+            val expectedTitle = "テストタスク"
+
+            // When
+            mockMvc.perform(
+                post("/api/tasks")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""{"title":"$expectedTitle"}"""),
+            )
+
+            // Then
+            verify { mockTaskService.createTask(match { it.title == expectedTitle }) }
+        }
+
+        @Test
+        fun `正常な POST リクエストで、期待通りのレスポンスボディが返る`() {
+            // Given
+            val expectedResponse =
+                TaskResponse(
+                    id = "test-id-456",
+                    createdAt = "2025-08-05T15:45:30.789Z",
+                )
+
+            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
+
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":"テストタスク"}"""),
+                )
+
+            // Then
+            result
+                .andExpect(jsonPath("$.id").value(expectedResponse.id))
+                .andExpect(jsonPath("$.createdAt").value(expectedResponse.createdAt))
+        }
+
+        @Test
+        fun `Location ヘッダーが正しく設定されている`() {
+            // Given
+            val expectedResponse =
+                TaskResponse(
+                    id = "test-id-789",
+                    createdAt = "2000-01-01T00:00:00.000Z",
+                )
+            every { mockTaskService.createTask(any()) } returns Result.success(expectedResponse)
+
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":"テストタスク"}"""),
+                )
+
+            // Then
+            result.andExpect(header().string("Location", "/api/tasks/test-id-789"))
+        }
     }
 
-    @Test
-    fun `api task に POST したとき、タスクをサービスに渡している`() {
-        // Given
-        every { mockTaskService.saveTask(any()) } returns Unit
+    @Nested
+    @DisplayName("異常系")
+    inner class ErrorScenarios {
+        @Test
+        fun `title が空文字のとき、400 Bad Request が返る`() {
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":""}"""),
+                )
 
-        // When
-        mockMvc.perform(
-            post("/api/task")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""{"task":"テストタスク"}"""),
-        )
+            // Then
+            result.andExpect(status().isBadRequest)
+        }
 
-        // Then
-        verify { mockTaskService.saveTask("テストタスク") }
+        @Test
+        fun `title が空文字のとき、適切なエラーメッセージが返る`() {
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":""}"""),
+                )
+
+            // Then
+            result
+                .andExpect(jsonPath("$.message").value("タイトルを入力してください"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.path").value("/api/tasks"))
+        }
+
+        @Test
+        fun `title が null のとき、400 Bad Request が返る`() {
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":null}"""),
+                )
+
+            // Then
+            result.andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `リクエストボディがない場合、400 Bad Request が返る`() {
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON),
+                )
+
+            // Then
+            result.andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `不正なJSONの場合、400 Bad Request が返る`() {
+            // Given
+            @Suppress("JsonStandardCompliance")
+            val invalidJson = """{"title":"テストタスク"""
+
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson),
+                )
+
+            // Then
+            result.andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `Content-Type が application json でない場合、415 Unsupported Media Type が返る`() {
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("テストタスク"),
+                )
+
+            // Then
+            result.andExpect(status().isUnsupportedMediaType)
+        }
+
+        @Test
+        fun `サービス層で例外が発生した場合、500 Internal Server Error が返る`() {
+            // Given
+            every { mockTaskService.createTask(any()) } throws RuntimeException("サービスエラー")
+
+            // When
+            val result =
+                mockMvc.perform(
+                    post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"title":"テストタスク"}"""),
+                )
+
+            // Then
+            result.andExpect(status().isInternalServerError)
+        }
     }
 }

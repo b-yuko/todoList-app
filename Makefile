@@ -4,7 +4,7 @@ front:
 	cd frontend && npm run dev
 
 back:
-	cd backend && ./gradlew bootRun --args='--spring.profiles.active=local'
+	cd backend && AWS_ACCESS_KEY_ID=dummy AWS_SECRET_ACCESS_KEY=dummy ./gradlew bootRun --args='--spring.profiles.active=local'
 
 pre-push: front-check back-check
 

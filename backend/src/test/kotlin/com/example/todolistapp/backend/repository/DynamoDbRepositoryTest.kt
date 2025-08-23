@@ -1,67 +1,93 @@
 package com.example.todolistapp.backend.repository
 
-import com.example.todolistapp.backend.model.TaskModel
+import com.example.todolistapp.domain.Task
+import com.example.todolistapp.repository.TaskRepository
+import com.example.todolistapp.repository.TaskRepositoryImpl
+import com.example.todolistapp.repository.entity.TaskEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.Logger
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException
 
 class DynamoDbRepositoryTest {
-    private fun createTestTaskModel(): TaskModel =
-        TaskModel(
-            taskId = "test-id",
-            createdAt = 1234567890000,
-            taskTitle = "Test Task",
+    private lateinit var table: DynamoDbTable<TaskEntity>
+    private lateinit var logger: Logger
+    private lateinit var repository: TaskRepository
+
+    companion object {
+        private const val FIXED_TIME = "2024-01-15T10:30:45.123Z"
+    }
+
+    private val testTask =
+        Task(
+            id = "test-id",
+            createdAt = FIXED_TIME,
+            title = "Test Task",
         )
 
-    @Test
-    fun `save したとき DynamoDB に putItem する`() {
-        // Given
-        val spyTable = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
-        val repository = DynamoDbTaskRepository(spyTable)
-        val inputModel = createTestTaskModel()
+    private val testTaskEntity =
+        TaskEntity(
+            id = "test-id",
+            createdAt = FIXED_TIME,
+            title = "Test Task",
+        )
 
-        // When
-        repository.save(inputModel)
-
-        // Then
-        verify(exactly = 1) { spyTable.putItem(inputModel) }
+    @BeforeEach
+    fun setUp() {
+        table = mockk()
+        logger = mockk(relaxed = true)
+        repository = TaskRepositoryImpl(table, logger)
     }
 
     @Test
-    fun `save が成功したとき Result_success を返す`() {
+    fun `save() でタスクが正常に保存されること`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskModel>>(relaxed = true)
-        val repository = DynamoDbTaskRepository(table)
-        val inputModel = createTestTaskModel()
+        every { table.putItem(any<TaskEntity>()) } returns Unit
 
         // When
-        val result = repository.save(inputModel)
+        val result = repository.save(testTask)
 
         // Then
         assertTrue(result.isSuccess)
-        verify(exactly = 1) { table.putItem(inputModel) }
+        verify { table.putItem(testTaskEntity) }
     }
 
     @Test
-    fun `save が失敗したとき Result_failure を返す`() {
+    fun `DynamoDB操作で例外が発生した場合、失敗として扱うこと`() {
         // Given
-        val table = mockk<DynamoDbTable<TaskModel>>()
-        val repository = DynamoDbTaskRepository(table)
-        val inputModel = createTestTaskModel()
-        val exception = RuntimeException("DynamoDB error")
-
-        every { table.putItem(any<TaskModel>()) } throws exception
+        every { table.putItem(any<TaskEntity>()) } throws
+            DynamoDbException.builder().message("Connection failed").build()
 
         // When
-        val result = repository.save(inputModel)
+        val result = repository.save(testTask)
 
         // Then
         assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
-        verify(exactly = 1) { table.putItem(inputModel) }
+        verify { table.putItem(testTaskEntity) }
+    }
+
+    @Test
+    fun `DynamoDB操作で例外が発生した場合、エラーログが出力されること`() {
+        // Given
+        repository = TaskRepositoryImpl(table, logger)
+
+        every { table.putItem(any<TaskEntity>()) } throws
+            DynamoDbException.builder().message("Connection failed").build()
+
+        // When
+        repository.save(testTask)
+
+        // Then
+        verify {
+            logger.error(
+                match { it.contains(testTask.id) },
+                any<DynamoDbException>(),
+            )
+        }
     }
 }

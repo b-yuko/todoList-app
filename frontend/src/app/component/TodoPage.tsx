@@ -15,7 +15,7 @@ export function TodoPage({ taskRepository }: TopPageProps) {
     const activeElement = document.activeElement as HTMLElement;
 
     if (activeElement?.tagName === "BUTTON") {
-      await taskRepository.saveTask({ task: taskInput });
+      await taskRepository.saveTask({ title: taskInput });
     }
 
     setTaskInput("");
