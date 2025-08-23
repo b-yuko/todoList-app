@@ -41,10 +41,11 @@ class TaskControllerTest {
         @Test
         fun `api tasks に POST したとき、201 Created が返る`() {
             // Given
-            val stubTaskResponse = TaskResponse(
-                id = "stub-id",
-                createdAt = "2000-01-01T00:00:00.000Z",
-            )
+            val stubTaskResponse =
+                TaskResponse(
+                    id = "stub-id",
+                    createdAt = "2000-01-01T00:00:00.000Z",
+                )
 
             every { mockTaskService.createTask(any()) } returns Result.success(stubTaskResponse)
 
