@@ -1,11 +1,11 @@
 val mockitoAgent: Configuration by configurations.creating
 
 plugins {
-    kotlin("jvm") version "2.1.21"
-    kotlin("plugin.spring") version "2.1.21"
-    id("org.springframework.boot") version "3.5.0"
+    kotlin("jvm") version "2.2.20"
+    kotlin("plugin.spring") version "2.2.20"
+    id("org.springframework.boot") version "4.0.0-M2"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
+    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
     id("com.github.ben-manes.versions") version "0.52.0"
 }
 
@@ -27,17 +27,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("software.amazon.awssdk:dynamodb-enhanced:2.31.35")
+    implementation("software.amazon.awssdk:dynamodb-enhanced:2.33.9")
 
 //    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("io.mockk:mockk:1.14.5")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    mockitoAgent("net.bytebuddy:byte-buddy-agent:1.17.5") { isTransitive = false }
+    mockitoAgent("net.bytebuddy:byte-buddy-agent") { isTransitive = false }
 }
 
 kotlin {
@@ -52,7 +52,7 @@ tasks.withType<Test> {
 }
 
 ktlint {
-    version.set("1.6.0")
+    version.set("1.7.1")
     verbose.set(true)
 
     reporters {
